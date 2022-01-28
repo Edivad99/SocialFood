@@ -80,7 +80,9 @@ builder.Services.AddAuthorization(options =>
 });
 
 builder.Services.AddScoped<IIdentityService, IdentityService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddSingleton<IAuthRepository>(_ => new AuthRepository(connectionString));
+builder.Services.AddSingleton<IAccountRepository>(_ => new AccountRepository(connectionString));
 
 T Configure<T>(string sectionName) where T : class
 {

@@ -28,7 +28,7 @@ public class AuthController : ControllerBase
         return BadRequest();
     }
 
-    [HttpPost("signin")]
+    [HttpPost("registration")]
     [AllowAnonymous]
     public async Task<IActionResult> Signin(LoginRequest request)
     {

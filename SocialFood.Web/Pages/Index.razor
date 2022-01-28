@@ -1,11 +1,8 @@
 ﻿@page "/"
 @attribute [Authorize]
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
-
+<AuthorizeView>
+    <h1>Bentornato, @context.User.Identity.Name !</h1>
+</AuthorizeView>

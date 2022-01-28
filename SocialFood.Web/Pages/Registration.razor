@@ -1,11 +1,11 @@
-﻿@page "/login"
+﻿@page "/registration"
 @inject HttpClient HttpClient
 @inject AuthenticationStateProvider AuthStateProvider
 @inject ILocalStorageService LocalStorage
 @inject NavigationManager NavigationManager
 
 
-<h3>Login</h3>
+<h3>Registrazione</h3>
 
 @if(responseMessage != null && !responseMessage.IsSuccessStatusCode)
  {
@@ -13,20 +13,11 @@
  }
 
 <EditForm Model="user" OnSubmit="HandleLogin">
-    <ul style="list-style-type: none; padding-left:0px;">
-        <li>
-            <label for="username">Username:</label>
-            <InputText id="username" @bind-Value="user.Username" />
-        </li>
-        <li>
-            <label for="password">Password:</label>
-            <InputText id="password" @bind-Value="user.Password" type="password" />
-        </li>
-    </ul>
-    <div class="btn-group" role="group">
-        <button type="button" class="btn btn-outline-primary" @onclick="Registration">Registrazione</button>
-        <button type="submit" class="btn btn-primary">Login</button>
-    </div>
+    <label for="username">Username</label>
+    <InputText id="username" @bind-Value="user.Username" />
+    <label for="password">Password</label>
+    <InputText id="password" @bind-Value="user.Password" type="password"/>
+    <button type="submit" class="btn btn-primary">Login</button>
 </EditForm>
 
 
@@ -36,7 +27,7 @@
 
     async Task HandleLogin()
     {
-        responseMessage = await HttpClient.PostAsJsonAsync("api/Auth/login", user);
+        responseMessage = await HttpClient.PostAsJsonAsync("api/Auth/registration", user);
         if(responseMessage.IsSuccessStatusCode)
         {
             var authResponse = await responseMessage.Content.ReadFromJsonAsync<AuthResponse>();
@@ -45,8 +36,6 @@
             await AuthStateProvider.GetAuthenticationStateAsync();
         }
     }
-
-    void Registration() => NavigationManager.NavigateTo("/registration");
 
     protected override async void OnAfterRender(bool firstRender)
     {

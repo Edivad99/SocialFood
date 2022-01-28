@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialFood.Shared", "Social
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialFood.Data", "SocialFood.Data\SocialFood.Data.csproj", "{F0CAE0D3-9140-48E9-B3B2-A1B8394FC326}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SocialFood.Web", "SocialFood.Web\SocialFood.Web.csproj", "{86000F0C-D584-4096-886A-21C7EBC521BA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{F0CAE0D3-9140-48E9-B3B2-A1B8394FC326}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F0CAE0D3-9140-48E9-B3B2-A1B8394FC326}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F0CAE0D3-9140-48E9-B3B2-A1B8394FC326}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86000F0C-D584-4096-886A-21C7EBC521BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86000F0C-D584-4096-886A-21C7EBC521BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86000F0C-D584-4096-886A-21C7EBC521BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86000F0C-D584-4096-886A-21C7EBC521BA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

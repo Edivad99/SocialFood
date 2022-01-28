@@ -22,10 +22,7 @@ public class AuthRepository : Repository, IAuthRepository
         dynamicParameters.Add("@PASSWORD", password, DbType.String, ParameterDirection.Input);
 
         using var conn = GetDbConnection();
-        var result = await conn.QueryAsync<User>(sql, dynamicParameters);
-        if (result.Count() == 1)
-            return result.ToList()[0];
-        return null;
+        return await conn.QueryFirstAsync<User>(sql, dynamicParameters);
     }
 
     public async Task InsertUserAsync(string id, string username, string password)

@@ -2,58 +2,50 @@
 @inject HttpClient HttpClient
 @attribute [Authorize]
 
-<PageTitle>Weather forecast</PageTitle>
+<PageTitle>Trova | SocialFood</PageTitle>
 
-<h1>Weather forecast</h1>
+<h1>Cerca amici</h1>
 
 <p>This component demonstrates fetching data from the server.</p>
 
-@if (forecasts == null)
+
+@*<label for="name">Username:</label>
+<input type="text" id="name" value="@username" @oninput="(e) => UsernameChanged(e.Value.ToString())" />*@
+
+
+<EditForm Model="user" OnSubmit="FindUsers">
+    <label for="username">Username</label>
+    <InputText id="username" @bind-Value="user.Username" />
+    <button type="submit" class="btn btn-primary">Cerca</button>
+</EditForm>
+
+@foreach (var user in users)
 {
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Temp. (C)</th>
-                <th>Temp. (F)</th>
-                <th>Summary</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var forecast in forecasts)
-            {
-                <tr>
-                    <td>@forecast.Date.ToShortDateString()</td>
-                    <td>@forecast.TemperatureC</td>
-                    <td>@forecast.TemperatureF</td>
-                    <td>@forecast.Summary</td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <ul>
+        <li>@user.Username</li>
+    </ul>
 }
 
 @code {
-    private WeatherForecast[]? forecasts;
+    private User user = new();
 
-    protected override async Task OnInitializedAsync()
+    private List<UserDTO> users = new();
+
+    async void FindUsers()
     {
-        forecasts = await HttpClient.GetFromJsonAsync<WeatherForecast[]>("sample-data/weather.json");
+        var url = $"/api/Account/finduser/{user.Username}";
+        var responseMessage = await HttpClient.GetAsync(url);
+        if (responseMessage.IsSuccessStatusCode)
+        {
+            users = await responseMessage.Content.ReadFromJsonAsync<List<UserDTO>>();
+        }
+        else
+            users = new();
     }
 
-    public class WeatherForecast
+    class User
     {
-        public DateTime Date { get; set; }
-
-        public int TemperatureC { get; set; }
-
-        public string? Summary { get; set; }
-
-        public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+        public string Username { get; set; } = string.Empty;
     }
 }
 

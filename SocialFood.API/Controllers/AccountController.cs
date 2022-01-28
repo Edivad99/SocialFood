@@ -24,7 +24,6 @@ public class AccountController : ControllerBase
         var response = await accountService.GetUserFromUsernameAsync(username);
         if (!response.Any())
             return NotFound(response);
-        return Ok(response.Select(x => new { x.Username }));
+        return Ok(response.Select(x => new UserDTO { Username = x.Username }));
     }
 }
-

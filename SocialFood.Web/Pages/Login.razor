@@ -6,6 +6,11 @@
 
 <h3>Login</h3>
 
+@if(responseMessage != null && !responseMessage.IsSuccessStatusCode)
+ {
+    <p style="color:red;">Le credenziali inserite non sono corrette</p>
+ }
+
 <EditForm Model="user" OnSubmit="HandleLogin">
     <label for="username">Username</label>
     <InputText id="username" @bind-Value="user.Username" />
@@ -15,17 +20,16 @@
 </EditForm>
 
 
-
 @code {
     LoginRequest user = new LoginRequest();
+    HttpResponseMessage? responseMessage;
 
     async Task HandleLogin()
     {
-        Console.WriteLine(HttpClient.BaseAddress);
-        var result = await HttpClient.PostAsJsonAsync("api/Auth/login", user);
-        if(result.IsSuccessStatusCode)
+        responseMessage = await HttpClient.PostAsJsonAsync("api/Auth/login", user);
+        if(responseMessage.IsSuccessStatusCode)
         {
-            var authResponse = await result.Content.ReadFromJsonAsync<AuthResponse>();
+            var authResponse = await responseMessage.Content.ReadFromJsonAsync<AuthResponse>();
             var token = authResponse.AccessToken;
             await LocalStorage.SetItemAsync("token", token);
             await AuthStateProvider.GetAuthenticationStateAsync();

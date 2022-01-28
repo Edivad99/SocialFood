@@ -2,6 +2,7 @@
 @inject HttpClient HttpClient
 @inject AuthenticationStateProvider AuthStateProvider
 @inject ILocalStorageService LocalStorage
+@inject NavigationManager NavigationManager
 
 
 <h3>Login</h3>
@@ -35,5 +36,14 @@
             await AuthStateProvider.GetAuthenticationStateAsync();
         }
     }
-}
 
+    protected override async void OnAfterRender(bool firstRender)
+    {
+        string token = await LocalStorage.GetItemAsStringAsync("token");
+        if (!string.IsNullOrEmpty(token))
+        {
+            NavigationManager.NavigateTo("/");
+        }
+        base.OnAfterRender(firstRender);
+    }
+}

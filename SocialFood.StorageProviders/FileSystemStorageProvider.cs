@@ -19,7 +19,7 @@ internal class FileSystemStorageProvider : IStorageProvider
         return Task.CompletedTask;
     }
 
-    public Task<Stream> ReadAsync(string path)
+    public Task<Stream>? ReadAsync(string path)
     {
         var fullPath = Path.Combine(settings.StorageFolder, path);
         if (!File.Exists(fullPath))
@@ -31,7 +31,7 @@ internal class FileSystemStorageProvider : IStorageProvider
     public async Task SaveAsync(string path, Stream stream)
     {
         var fullPath = Path.Combine(settings.StorageFolder, path);
-        Directory.CreateDirectory(Path.GetDirectoryName(fullPath));
+        Directory.CreateDirectory(Path.GetDirectoryName(fullPath)!);
 
         using var outputStram = new FileStream(fullPath, FileMode.Create, FileAccess.Write);
         stream.Position = 0;

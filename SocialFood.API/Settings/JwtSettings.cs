@@ -3,7 +3,7 @@ namespace SocialFood.API.Settings;
 
 public class JwtSettings
 {
-    public string SecurityKey { get; init; }
-    public string Issuer { get; init; }
-    public string Audience { get; set; }
+    public string SecurityKey { get; init; } = string.Empty;
+    public string Issuer { get; init; } = string.Empty;
+    public string Audience { get; set; } = string.Empty;
 }

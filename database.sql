@@ -5,6 +5,8 @@ CREATE TABLE users (
   `ID` varchar(40) NOT NULL,
   `User` varchar(20) NOT NULL,
   `Password` varchar(20) NOT NULL,
+  `Firstname` varchar(30) NOT NULL,
+  `Lastname` varchar(30) NOT NULL,
   PRIMARY KEY(`ID`)
 ) ENGINE=InnoDB;
 

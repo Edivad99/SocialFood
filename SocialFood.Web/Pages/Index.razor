@@ -5,11 +5,12 @@
 <PageTitle>Home</PageTitle>
 
 <AuthorizeView>
-    <h1>Bentornato, @context.User.GetUsername() !</h1>
+    <h1>Bentornato, @context.User.GetFirstName()!</h1>
 </AuthorizeView>
 
 @if(images.Any())
 {
+    <h3>Ecco quello che è successo nelle scorse ore!</h3>
     <ol>
         @foreach(var image in images)
         {

@@ -34,9 +34,9 @@ public class AuthController : ControllerBase
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Signin(LoginRequest request)
+    public async Task<IActionResult> Registration(RegistrationRequest request)
     {
-        var response = await identityService.SigninAsync(request);
+        var response = await identityService.RegistrationAsync(request);
         if (response != null)
             return Ok(response);
         return BadRequest();

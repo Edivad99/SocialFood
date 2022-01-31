@@ -25,15 +25,17 @@ public class AuthRepository : Repository, IAuthRepository
         return await conn.QueryFirstOrDefaultAsync<User>(sql, dynamicParameters);
     }
 
-    public async Task InsertUserAsync(string id, string username, string password)
+    public async Task InsertUserAsync(User user)
     {
-        var sql = @"INSERT INTO `users` (`ID`, `Username`, `Password`) VALUES
-                  (@ID, @USERNAME, @PASSWORD);";
+        var sql = @"INSERT INTO `users` (`ID`, `Username`, `Password`, `Firstname`, `Lastname`) VALUES
+                  (@ID, @USERNAME, @PASSWORD, @FIRSTNAME, @LASTNAME);";
 
         var dynamicParameters = new DynamicParameters();
-        dynamicParameters.Add("@ID", id, DbType.String, ParameterDirection.Input);
-        dynamicParameters.Add("@USERNAME", username, DbType.String, ParameterDirection.Input);
-        dynamicParameters.Add("@PASSWORD", password, DbType.String, ParameterDirection.Input);
+        dynamicParameters.Add("@ID", user.ID, DbType.String, ParameterDirection.Input);
+        dynamicParameters.Add("@USERNAME", user.Username, DbType.String, ParameterDirection.Input);
+        dynamicParameters.Add("@PASSWORD", user.Password, DbType.String, ParameterDirection.Input);
+        dynamicParameters.Add("@FIRSTNAME", user.Firstname, DbType.String, ParameterDirection.Input);
+        dynamicParameters.Add("@LASTNAME", user.Lastname, DbType.String, ParameterDirection.Input);
 
         using var conn = GetDbConnection();
         await conn.ExecuteAsync(sql, dynamicParameters);

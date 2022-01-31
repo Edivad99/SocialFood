@@ -13,16 +13,20 @@
  }
 
 <EditForm Model="user" OnSubmit="HandleLogin">
+    <label for="nome">Nome</label>
+    <InputText id="nome" @bind-Value="user.FirstName" />
+    <label for="cognome">Cognome</label>
+    <InputText id="cognome" @bind-Value="user.LastName" />
     <label for="username">Username</label>
     <InputText id="username" @bind-Value="user.Username" />
     <label for="password">Password</label>
-    <InputText id="password" @bind-Value="user.Password" type="password"/>
-    <button type="submit" class="btn btn-primary">Login</button>
+    <InputText id="password" @bind-Value="user.Password" type="password" />
+    <button type="submit" class="btn btn-primary">Registrati</button>
 </EditForm>
 
 
 @code {
-    LoginRequest user = new LoginRequest();
+    RegistrationRequest user = new();
     HttpResponseMessage? responseMessage;
 
     async Task HandleLogin()

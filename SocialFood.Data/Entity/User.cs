@@ -1,9 +1,3 @@
-﻿using System;
-namespace SocialFood.Data.Entity;
+﻿namespace SocialFood.Data.Entity;
 
-public record User
-{
-    public string ID { get; set; }
-    public string Username { get; set; }
-    public string Password { get; set; }
-}
+public record User (string ID, string Username, string Password, string Firstname, string Lastname);

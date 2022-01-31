@@ -7,6 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using SocialFood.Shared.Models;
 using SocialFood.API.Settings;
 using SocialFood.Data.Repository;
+using SocialFood.Data.Entity;
 
 namespace SocialFood.API.Services;
 
@@ -21,14 +22,16 @@ public class IdentityService : IIdentityService
         this.jwtSettings = jwtSettingsOptions.Value;
     }
 
-    private AuthResponse GenerateAuthResponse(string id, string username)
+    private AuthResponse GenerateAuthResponse(User user)
     {
         //Nei claims puoi aggiungere tutte le informazioni utili che ritieni possano servirti
         //User id del db, username ecc.
         var claims = new[]
         {
-            new Claim(ClaimTypes.NameIdentifier, id),
-            new Claim(ClaimTypes.Name, username)
+            new Claim(ClaimTypes.NameIdentifier, user.ID),
+            new Claim(ClaimTypes.Name, user.Username),
+            new Claim(ClaimTypes.GivenName, user.Firstname),
+            new Claim(ClaimTypes.Surname, user.Lastname)
         };
 
         var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecurityKey));
@@ -49,17 +52,18 @@ public class IdentityService : IIdentityService
 
     public async Task<AuthResponse?> LoginAsync(LoginRequest request)
     {
-        var result = await authRepository.GetUserAsync(request.Username, request.Password);
-        if (result == null)
+        var user = await authRepository.GetUserAsync(request.Username, request.Password);
+        if (user == null)
             return null;
 
-        return GenerateAuthResponse(result.ID, result.Username);
+        return GenerateAuthResponse(user);
     }
 
-    public async Task<AuthResponse> SigninAsync(LoginRequest request)
+    public async Task<AuthResponse> RegistrationAsync(RegistrationRequest request)
     {
         var id = Guid.NewGuid().ToString();
-        await authRepository.InsertUserAsync(id, request.Username, request.Password);
-        return GenerateAuthResponse(id, request.Username);
+        var user = new User(id, request.Username, request.Password, request.FirstName, request.LastName);
+        await authRepository.InsertUserAsync(user);
+        return GenerateAuthResponse(user);
     }
 }

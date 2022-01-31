@@ -25,6 +25,7 @@ public class ImageController : ControllerBase
     }
 
     [HttpGet("{imageID}")]
+    [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetImage(string imageID)
@@ -67,5 +68,16 @@ public class ImageController : ControllerBase
         if (image == null)
             return NotFound();
         return Ok(image);
+    }
+
+    [HttpGet("myimages")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetMyImages()
+    {
+        var images = await imageService.GetMyImageInfoAsync(User.GetId());
+        if (images == null)
+            return NotFound();
+        return Ok(images);
     }
 }

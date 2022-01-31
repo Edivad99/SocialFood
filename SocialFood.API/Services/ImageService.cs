@@ -71,5 +71,11 @@ public class ImageService : IImageService
         var stream = await storageProvider.ReadAsync(image.Path);
         return (stream, image.ToImageDTO().ContentType);
     }
+
+    public async Task<IEnumerable<ImageDTO>> GetMyImageInfoAsync(Guid userID)
+    {
+        var images = await imageRepository.GetImagesFromUserID(userID.ToString());
+        return images.Select(x => x.ToImageDTO());
+    }
 }
 

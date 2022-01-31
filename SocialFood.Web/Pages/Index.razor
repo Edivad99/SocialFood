@@ -1,8 +1,41 @@
 ﻿@page "/"
 @attribute [Authorize]
+@inject HttpClient HttpClient
 
 <PageTitle>Home</PageTitle>
 
 <AuthorizeView>
-    <h1>Bentornato, @context.User.Identity.Name !</h1>
+    <h1>Bentornato, @context.User.GetUsername() !</h1>
 </AuthorizeView>
+
+@if(images.Any())
+{
+    <ol>
+        @foreach(var image in images)
+        {
+            <li><ImageView image="image"/></li>
+        }
+    </ol>
+}
+else
+{
+    <p>Nessuna immagine caricata</p>
+}
+
+
+@code{
+    List<ImageDTO> images = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var responseMessage = await HttpClient.GetAsync("/api/Image/myimages");
+        if (responseMessage.IsSuccessStatusCode)
+        {
+            images = await responseMessage.Content.ReadFromJsonAsync<List<ImageDTO>>();
+        }
+        else
+        {
+            images.Clear();
+        }
+    }
+}

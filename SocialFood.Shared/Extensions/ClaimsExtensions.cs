@@ -12,6 +12,9 @@ public static class ClaimsExtensions
         return Guid.Parse(value);
     }
 
+    public static string? GetUsername(this IPrincipal user)
+        => GetClaimValue(user, ClaimTypes.Name);
+
     public static string? GetFirstName(this IPrincipal user)
         => GetClaimValue(user, ClaimTypes.GivenName);
 

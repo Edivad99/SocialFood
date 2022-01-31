@@ -40,6 +40,17 @@ public class ImageRepository : Repository, IImageRepository
         return await conn.QueryFirstOrDefaultAsync<Image>(sql, dynamicParameters);
     }
 
+    public async Task<IEnumerable<Image>> GetImagesFromUserID(string UserID)
+    {
+        var sql = @"SELECT * FROM `images` WHERE `IDUser` = @ID;";
+
+        var dynamicParameters = new DynamicParameters();
+        dynamicParameters.Add("@ID", UserID, DbType.String, ParameterDirection.Input);
+
+        using var conn = GetDbConnection();
+        return await conn.QueryAsync<Image>(sql, dynamicParameters);
+    }
+
     public async Task DeleteImage(string ImageID)
     {
         var sql = @"DELETE FROM `images` WHERE `ID` = @ID;";

@@ -11,6 +11,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.15.1" />
+    <PackageReference Include="MimeMapping" Version="1.0.1.37" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,16 +20,26 @@
     <None Remove="Microsoft.Extensions.Options" />
     <None Remove="System.IdentityModel.Tokens.Jwt" />
     <None Remove="Settings\" />
+    <None Remove="Models\" />
+    <None Remove="Filters\" />
+    <None Remove="Extensions\" />
+    <None Remove="MimeMapping" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Services\" />
     <Folder Include="Settings\" />
+    <Folder Include="Models\" />
+    <Folder Include="Filters\" />
+    <Folder Include="Extensions\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SocialFood.Shared\SocialFood.Shared.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
     <ProjectReference Include="..\SocialFood.Data\SocialFood.Data.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+    <ProjectReference Include="..\SocialFood.StorageProviders\SocialFood.StorageProviders.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
   </ItemGroup>

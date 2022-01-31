@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using SocialFood.API.Services;
 using SocialFood.API.Settings;
 using SocialFood.Data.Repository;
+using SocialFood.StorageProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -79,10 +80,17 @@ builder.Services.AddAuthorization(options =>
     options.FallbackPolicy = options.DefaultPolicy;
 });
 
+builder.Services.AddFileSystemStorageProvider(options =>
+{
+    options.StorageFolder = builder.Configuration.GetValue<string>("AppSettings:StorageFolder");
+});
+
 builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddSingleton<IAuthRepository>(_ => new AuthRepository(connectionString));
 builder.Services.AddSingleton<IAccountRepository>(_ => new AccountRepository(connectionString));
+builder.Services.AddSingleton<IImageRepository>(_ => new ImageRepository(connectionString));
 
 T Configure<T>(string sectionName) where T : class
 {

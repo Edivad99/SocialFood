@@ -11,10 +11,11 @@ CREATE TABLE users (
 CREATE TABLE images (
   `ID` varchar(40) NOT NULL,
   `IDUser` varchar(40) NOT NULL,
-  `Image` longblob NOT NULL,
+  `Path` varchar(255) NOT NULL,
+  `Length` int NOT NULL,
   `Ora` datetime NOT NULL,
-  `Descrizione` varchar(150) NOT NULL,
-  `Luogo` varchar(100) NOT NULL,
+  `Descrizione` varchar(255) NOT NULL,
+  `Luogo` varchar(255) NOT NULL,
   PRIMARY KEY(`ID`),
   FOREIGN KEY (`IDUser`) REFERENCES `users` (`ID`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB;

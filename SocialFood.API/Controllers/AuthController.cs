@@ -20,6 +20,8 @@ public class AuthController : ControllerBase
 
     [HttpPost("login")]
     [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Login(LoginRequest request)
     {
         var response = await identityService.LoginAsync(request);
@@ -30,6 +32,8 @@ public class AuthController : ControllerBase
 
     [HttpPost("registration")]
     [AllowAnonymous]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Signin(LoginRequest request)
     {
         var response = await identityService.SigninAsync(request);

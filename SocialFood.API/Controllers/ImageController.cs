@@ -25,6 +25,8 @@ public class ImageController : ControllerBase
     }
 
     [HttpGet("{imageID}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetImage(string imageID)
     {
         var image = await imageService.GetImageAsync(imageID);
@@ -33,7 +35,9 @@ public class ImageController : ControllerBase
         return File(image.Value.Stream, image.Value.ContentType);
     }
 
-    [HttpGet("info/{imageID}")]
+    [HttpGet("{imageID}/info")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetImageInfo(string imageID)
     {
         var image = await imageService.GetImageInfoAsync(imageID);
@@ -44,6 +48,7 @@ public class ImageController : ControllerBase
 
     [Consumes("multipart/form-data")]
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Upload([FromForm] UploadImageRequest request)
     {
         var streamFileContent = new StreamFileContent(request.File.OpenReadStream(), request.File.ContentType,
@@ -54,6 +59,8 @@ public class ImageController : ControllerBase
     }
 
     [HttpDelete("{imageID}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(string imageID)
     {
         var image = await imageService.DeleteAsync(User.GetId(), imageID);

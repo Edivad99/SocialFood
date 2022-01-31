@@ -19,6 +19,8 @@ public class AccountController : ControllerBase
     }
 
     [HttpGet("finduser/{username}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetUserFromUsernameAsync(string username)
     {
         var response = await accountService.GetUserFromUsernameAsync(username);

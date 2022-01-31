@@ -1,0 +1,75 @@
+﻿@page "/caricafoto"
+@inject HttpClient HttpClient
+@attribute [Authorize]
+
+<PageTitle>Carica foto | SocialFood</PageTitle>
+
+<h1>Carica foto</h1>
+
+<EditForm Model="uploadFile" OnSubmit="HandleUpload">
+    <ul style="list-style-type: none; padding-left:0px;">
+        <li>
+            <label for="file">Seleziona un file:</label>
+            <InputFile id="file" OnChange="@LoadFile" />
+        </li>
+        <li>
+            <label for="descrizione">Descrizione:</label>
+            <InputText id="descrizione" @bind-Value="uploadFile.Descrizione" />
+        </li>
+        <li>
+            <label for="luogo">Luogo:</label>
+            <InputText id="luogo" @bind-Value="uploadFile.Luogo" />
+        </li>
+    </ul>
+    <div class="btn-group" role="group">
+        <button type="submit" class="btn btn-primary">Carica</button>
+    </div>
+</EditForm>
+
+
+@code {
+    const long maxFileSize = 12000000;
+    UploadFile uploadFile = new();
+
+    void LoadFile(InputFileChangeEventArgs e)
+    {
+        var file = e.GetMultipleFiles().FirstOrDefault();
+        if(file != null)
+        {
+            uploadFile.FileContent = new StreamContent(file.OpenReadStream(maxFileSize));
+            uploadFile.FileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+            uploadFile.FileName = file.Name;
+        }
+    }
+
+    async void HandleUpload()
+    {
+        using var content = new MultipartFormDataContent();
+        content.Add(uploadFile.FileContent, "\"File\"", uploadFile.FileName);
+        content.Add(new StringContent(uploadFile.Descrizione), "Descrizione");
+        content.Add(new StringContent(uploadFile.Luogo), "Luogo");
+        content.Add(new StringContent(DateTime.Now.ToString("yyyy-MM-dd H:MM:ss")), "Ora");
+
+        var uploadResponse = await HttpClient.PostAsync("/api/Image", content);
+
+        if(uploadResponse.StatusCode == HttpStatusCode.NoContent)
+        {
+            Console.WriteLine("Caricamento completato");
+            uploadFile.FileContent.Dispose();
+            uploadFile = new();
+        }
+    }
+
+
+
+    class UploadFile
+    {
+        public StreamContent FileContent { get; set; }
+        public string FileName { get; set; }
+        [Required]
+        public string Descrizione { get; set; }
+        [Required]
+        public string Luogo { get; set; }
+    }
+}
+

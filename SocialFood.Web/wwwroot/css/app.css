@@ -69,3 +69,12 @@ a, .btn-link {
     margin-bottom: 10px;
     width: 60%;
 }
+
+ul.vertical-form {
+    list-style-type: none;
+    padding-left: 0px;
+}
+
+ul.vertical-form > li {
+    margin-bottom: 10px;
+}

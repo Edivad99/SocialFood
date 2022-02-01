@@ -13,21 +13,36 @@
  }
 
 <EditForm Model="user" OnSubmit="HandleLogin">
-    <label for="nome">Nome</label>
-    <InputText id="nome" @bind-Value="user.FirstName" />
-    <label for="cognome">Cognome</label>
-    <InputText id="cognome" @bind-Value="user.LastName" />
-    <label for="username">Username</label>
-    <InputText id="username" @bind-Value="user.Username" />
-    <label for="password">Password</label>
-    <InputText id="password" @bind-Value="user.Password" type="password" />
-    <button type="submit" class="btn btn-primary">Registrati</button>
+    <ul class="vertical-form">
+        <li>
+            <label for="nome">Nome:</label>
+            <InputText id="nome" @bind-Value="user.FirstName" />
+        </li>
+        <li>
+            <label for="cognome">Cognome:</label>
+            <InputText id="cognome" @bind-Value="user.LastName" />
+        </li>
+        <li>
+            <label for="username">Username:</label>
+            <InputText id="username" @bind-Value="user.Username" />
+        </li>
+        <li>
+            <label for="password">Password:</label>
+            <InputText id="password" @bind-Value="user.Password" type="password" />
+        </li>
+    </ul>
+    <div class="btn-group" role="group">
+        <button type="button" class="btn btn-outline-primary" @onclick="Login">Hai già un'account?</button>
+        <button type="submit" class="btn btn-primary">Registrati</button>
+    </div>
 </EditForm>
 
 
 @code {
     RegistrationRequest user = new();
     HttpResponseMessage? responseMessage;
+
+    void Login() => NavigationManager.NavigateTo("/login");
 
     async Task HandleLogin()
     {

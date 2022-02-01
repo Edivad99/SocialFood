@@ -42,7 +42,7 @@ public class ImageRepository : Repository, IImageRepository
 
     public async Task<IEnumerable<Image>> GetImagesFromUserID(string UserID)
     {
-        var sql = @"SELECT * FROM `images` WHERE `IDUser` = @ID;";
+        var sql = @"SELECT * FROM `images` WHERE `IDUser` = @ID ORDER BY `Ora` DESC;";
 
         var dynamicParameters = new DynamicParameters();
         dynamicParameters.Add("@ID", UserID, DbType.String, ParameterDirection.Input);

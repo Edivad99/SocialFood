@@ -5,23 +5,25 @@
 <PageTitle>Home</PageTitle>
 
 <AuthorizeView>
-    <h1>Bentornato, @context.User.GetFirstName()!</h1>
+    <h2>Bentornato, @context.User.GetFirstName()!</h2>
 </AuthorizeView>
 
-@if(images.Any())
+@if (images.Any())
 {
-    <h3>Ecco quello che è successo nelle scorse ore!</h3>
-    <ol>
-        @foreach(var image in images)
-        {
-            <li><ImageView image="image"/></li>
-        }
-    </ol>
+    <p>Ecco quello che è successo nelle scorse ore!</p>
+
+    @foreach (var image in images)
+    {
+        <ImageView image="image" />
+    }
 }
 else
 {
     <p>Nessuna immagine caricata</p>
 }
+
+
+
 
 
 @code{

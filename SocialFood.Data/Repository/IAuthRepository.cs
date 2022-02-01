@@ -1,10 +1,9 @@
 ﻿using SocialFood.Data.Entity;
 
-namespace SocialFood.Data.Repository
+namespace SocialFood.Data.Repository;
+
+public interface IAuthRepository
 {
-    public interface IAuthRepository
-    {
-        Task<User?> GetUserAsync(string username, string password);
-        Task InsertUserAsync(User user);
-    }
+    Task<User?> GetUserAsync(string username, string password);
+    Task InsertUserAsync(User user);
 }

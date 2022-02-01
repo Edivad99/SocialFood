@@ -1,0 +1,68 @@
+﻿@page "/friends"
+@inject HttpClient HttpClient
+@attribute [Authorize]
+
+<PageTitle>I tuoi amici | SocialFood</PageTitle>
+
+<h1>I tuoi amici (@friends.Count())</h1>
+
+<UsersList Users="friends"/>
+
+@*<label for="name">Username:</label>
+    <input type="text" id="name" value="@username" @oninput="(e) => UsernameChanged(e.Value.ToString())" />*@
+
+<h5>Aggiungi amico</h5>
+<EditForm Model="user" OnSubmit="FindUsers">
+    <label for="username">Username:</label>
+    <InputText id="username" @bind-Value="user.Username" />
+    <button type="submit" class="btn btn-primary">Cerca</button>
+</EditForm>
+@if (users==null)
+{
+    <h6 class="text-danger">Account trovati: 0</h6>
+}
+else
+{
+    int userCount = users.Count();
+    if (userCount > 0)
+    {
+        <h6 class="text-success">Account trovati: @userCount</h6>
+        <UsersList Users="users"/>
+    }
+}
+
+@code {
+    List<UserDTO> friends = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var url = "/api/Account/friends";
+        var responseMessage = await HttpClient.GetAsync(url);
+        if (responseMessage.IsSuccessStatusCode)
+            friends = await responseMessage.Content.ReadFromJsonAsync<List<UserDTO>>();
+        else
+            friends.Clear();
+    }
+
+    private User user = new();
+    private List<UserDTO> users = null;
+
+    async void FindUsers()
+    {
+        var url = $"/api/Account/finduser/{user.Username}";
+        var responseMessage = await HttpClient.GetAsync(url);
+        if (responseMessage.IsSuccessStatusCode)
+        {
+            users = await responseMessage.Content.ReadFromJsonAsync<List<UserDTO>>();
+        }
+        else
+            users = null;
+        StateHasChanged();
+    }
+
+    class User
+    {
+        public string Username { get; set; } = string.Empty;
+    }
+}
+

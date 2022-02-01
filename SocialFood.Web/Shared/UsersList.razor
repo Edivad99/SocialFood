@@ -1,0 +1,20 @@
+﻿<ul>
+    @foreach (var user in Users)
+    {
+        <li>
+            <NavLink href="@GetProfileLink(user)">
+                @user.Username
+            </NavLink>
+        </li>
+    }
+</ul>
+
+@code {
+
+    [Parameter]
+    public List<UserDTO> Users { get; set; }
+
+    string GetProfileLink(UserDTO user) => $"/profile/{user.Username}";
+
+}
+

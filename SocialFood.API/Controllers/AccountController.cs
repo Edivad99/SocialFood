@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SocialFood.API.Services;
 using SocialFood.Shared.Models;
+using SocialFood.Shared.Extensions;
 
 namespace SocialFood.API.Controllers;
 
@@ -23,9 +24,25 @@ public class AccountController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetUserFromUsernameAsync(string username)
     {
-        var response = await accountService.GetUserFromUsernameAsync(username);
+        var response = await accountService.GetUsersFromUsernameAsync(username);
         if (!response.Any())
             return NotFound(response);
-        return Ok(response.Select(x => new UserDTO { Username = x.Username }));
+        return Ok(response);
+    }
+
+    [HttpGet("friends")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetYourFriends()
+    {
+        var response = await accountService.GetUsersFriendsAsync(User.GetUsername()!);
+        return Ok(response);
+    }
+
+    [HttpGet("friends/{username}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetUsersFriends(string username)
+    {
+        var response = await accountService.GetUsersFriendsAsync(username);
+        return Ok(response);
     }
 }

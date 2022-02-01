@@ -1,8 +1,9 @@
-﻿using SocialFood.Data.Entity;
+﻿using SocialFood.Shared.Models;
 
 namespace SocialFood.API.Services;
 
 public interface IAccountService
 {
-    Task<IEnumerable<User>> GetUserFromUsernameAsync(string username);
+    Task<IEnumerable<UserDTO>> GetUsersFriendsAsync(string username);
+    Task<IEnumerable<UserDTO>> GetUsersFromUsernameAsync(string username);
 }

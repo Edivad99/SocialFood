@@ -1,0 +1,48 @@
+﻿@page "/profile/{username?}"
+@inject HttpClient HttpClient
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@attribute [Authorize]
+
+
+<h2>@(personalAccount ? "Il tuo profilo" : Username)</h2>
+@if(!personalAccount)
+{
+    <h6>@(isYourFriend ? "E'" : "Non è") tuo amico</h6>
+}
+
+
+@code{
+
+    [Parameter]
+    public string? Username { get; set; }
+
+    bool personalAccount = false;
+    bool isYourFriend = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(Username))
+        {
+            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+            if (user.GetUsername() == Username)
+            {
+                personalAccount = true;
+                Username = user.GetUsername();
+            }
+            else
+            {
+                var url = "/api/Account/friends";
+                var responseMessage = await HttpClient.GetAsync(url);
+                if (responseMessage.IsSuccessStatusCode)
+                {
+                    List<UserDTO> friends = await responseMessage.Content.ReadFromJsonAsync<List<UserDTO>>();
+                    isYourFriend = friends.Where(u => u.Username == Username).Any();
+                }
+            }
+        }
+        else
+            personalAccount = true;
+    }
+}
+

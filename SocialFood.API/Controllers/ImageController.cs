@@ -70,7 +70,7 @@ public class ImageController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetImageInfo(Guid imageID)
     {
-        var image = await imageService.GetImageInfoAsync(imageID);
+        var image = await imageService.GetImageInfoAsync(User.GetId(), imageID);
         if(image == null)
             return NotFound();
         return Ok(image);
@@ -98,7 +98,7 @@ public class ImageController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetImagesFromUsername(string username)
     {
-        var images = await imageService.GetImageInfoFromUsernameAsync(username);
+        var images = await imageService.GetImageInfoFromUsernameAsync(User.GetId(), username);
         if (images == null)
             return NotFound();
         return Ok(images);

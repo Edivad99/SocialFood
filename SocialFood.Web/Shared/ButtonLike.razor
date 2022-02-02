@@ -1,12 +1,13 @@
 ﻿@inject HttpClient HttpClient
 
+<span>@Likes Like@(Likes>1 ? "s" : "")</span>
 @if (Like)
 {
-    <button type="button" class="btn btn-danger btn-sm" @onclick="UpdateLike">Non mi piace</button>
+    <button type="button" class="btn btn-danger btn-sm btn-likes" @onclick="UpdateLike">Non mi piace</button>
 }
 else
 {
-    <button type="button" class="btn btn-success btn-sm" @onclick="UpdateLike">Mi piace</button>
+    <button type="button" class="btn btn-success btn-sm btn-likes" @onclick="UpdateLike">Mi piace</button>
 }
 
 @code {
@@ -15,6 +16,9 @@ else
 
     [Parameter]
     public string ImageID { get; set; }
+
+    [Parameter]
+    public int Likes { get; set; }
 
     async void UpdateLike()
     {
@@ -31,6 +35,10 @@ else
         if(responseMessage.IsSuccessStatusCode)
         {
             Like = !Like;
+            if (Like)
+                Likes++;
+            else
+                Likes--;
             StateHasChanged();
         }
     }

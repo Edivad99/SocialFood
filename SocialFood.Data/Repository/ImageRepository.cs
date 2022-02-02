@@ -89,5 +89,20 @@ public class ImageRepository : Repository, IImageRepository
         var sql = @"DELETE FROM `likes` WHERE `IDUser` = @IDUSER AND `IDImage` = @IDIMAGE;";
         await ManageLikes(sql, currentUserID, friendUserID);
     }
+
+    public async Task<IEnumerable<User>> GetImageLikes(string imageID)
+    {
+        var sql = @"SELECT `users`.* 
+                    FROM `users`
+                    INNER JOIN `likes`
+                    ON `likes`.`IDuser` = `users`.`ID`
+                    WHERE likes.`IDImage` = @IDIMAGE;";
+
+        var dynamicParameters = new DynamicParameters();
+        dynamicParameters.Add("@IDIMAGE", imageID, DbType.String, ParameterDirection.Input);
+
+        using var conn = GetDbConnection();
+        return await conn.QueryAsync<User>(sql, dynamicParameters);
+    }
 }
 

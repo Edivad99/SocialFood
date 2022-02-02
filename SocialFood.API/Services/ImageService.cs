@@ -50,17 +50,17 @@ public class ImageService : IImageService
             return null;
         await imageRepository.DeleteImage(imageID.ToString());
         await storageProvider.DeleteAsync(image.Path);
-        return image.ToImageDTO();
+        return await ConvertToImageDTO(userID, image, true);
     }
 
     private async Task<Image> GetImageFullInfoAsync(Guid imageID) => await imageRepository.GetImageInfo(imageID.ToString());
 
-    public async Task<ImageDTO?> GetImageInfoAsync(Guid imageID)
+    public async Task<ImageDTO?> GetImageInfoAsync(Guid userID, Guid imageID)
     {
         var image = await GetImageFullInfoAsync(imageID);
         if (image == null)
             return null;
-        return image.ToImageDTO();
+        return await ConvertToImageDTO(userID, image);
     }
 
     public async Task<(Stream Stream, string ContentType)?> GetImageAsync(Guid imageID)
@@ -69,13 +69,13 @@ public class ImageService : IImageService
         if (image == null)
             return null;
         var stream = await storageProvider.ReadAsync(image.Path);
-        return (stream, image.ToImageDTO().ContentType);
+        return (stream, image.GetMimeMapping());
     }
 
-    public async Task<IEnumerable<ImageDTO>> GetImageInfoFromUsernameAsync(string username)
+    public async Task<IEnumerable<ImageDTO>> GetImageInfoFromUsernameAsync(Guid userID, string username)
     {
         var images = await imageRepository.GetImagesFromUsername(username);
-        return images.Select(x => x.ToImageDTO());
+        return images.Select(x => ConvertToImageDTO(userID, x)).Select(t => t.Result);
     }
 
     public async Task<bool> AddLikeToImage(Guid userID, Guid imageID)
@@ -94,6 +94,29 @@ public class ImageService : IImageService
             return false;
         await imageRepository.RemoveLikeToImage(userID.ToString(), imageID.ToString());
         return true;
+    }
+
+    private async Task<ImageDTO> ConvertToImageDTO(Guid userID, Image image, bool skipLikes = false)
+    {
+        var result = new ImageDTO()
+        {
+            Id = image.Id,
+            Descrizione = image.Descrizione,
+            Name = Path.GetFileName(image.Path),
+            Length = image.Length,
+            Luogo = image.Luogo,
+            Ora = image.Ora,
+            ContentType = image.GetMimeMapping()
+        };
+
+        if(!skipLikes)
+        {
+            var users = await imageRepository.GetImageLikes(image.Id);
+            result.Likes = users.Count();
+            result.YourLike = users.Where(u => u.ID == userID.ToString()).Any();
+        }
+
+        return result;
     }
 }
 

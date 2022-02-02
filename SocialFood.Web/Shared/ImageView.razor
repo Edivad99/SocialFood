@@ -7,7 +7,7 @@
         <p class="card-text">@image.Luogo</p>
     </div>
     <ul class="list-group list-group-flush">
-        <li class="list-group-item">@(new Random().Next(100)) likes <ButtonLike ImageID="@image.Id" Like="false"/></li>
+        <li class="list-group-item"><ButtonLike Likes="@image.Likes" ImageID="@image.Id" Like="@image.YourLike"/></li>
     </ul>
     <div class="card-footer">
         <small class="text-muted">Caricata il @image.Ora.ToShortDateString() alle @image.Ora.ToShortTimeString()</small>

@@ -9,4 +9,6 @@ public class ImageDTO
     public string Descrizione { get; set; }
     public string Luogo { get; set; }
     public string ContentType { get; set; }
+    public bool YourLike { get; set; }
+    public int Likes { get; set; }
 }

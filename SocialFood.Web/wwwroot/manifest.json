@@ -1,7 +1,7 @@
 ﻿{
   "name": "SocialFood",
   "short_name": "SocialFood",
-  "start_url": "./",
+  "start_url": ".",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#eba834",

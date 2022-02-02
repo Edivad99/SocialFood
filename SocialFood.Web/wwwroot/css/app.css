@@ -78,3 +78,6 @@ ul.vertical-form {
 ul.vertical-form > li {
     margin-bottom: 10px;
 }
+button.btn-likes {
+    margin-left: 20px;
+}

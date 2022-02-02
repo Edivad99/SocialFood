@@ -28,5 +28,9 @@
     <None Remove="Microsoft.AspNetCore.Components.Authorization" />
     <None Remove="Microsoft.Extensions.Http" />
     <None Remove="Blazored.LocalStorage" />
+    <None Remove="Util\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Utils\" />
   </ItemGroup>
 </Project>

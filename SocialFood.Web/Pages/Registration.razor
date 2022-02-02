@@ -46,7 +46,14 @@
 
     async Task HandleLogin()
     {
-        responseMessage = await HttpClient.PostAsJsonAsync("api/Auth/registration", user);
+        RegistrationRequest hashUser = new()
+        {
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            Username = user.Username,
+            Password = SHAUtil.CalculateHash(user.Password)
+        };
+        responseMessage = await HttpClient.PostAsJsonAsync("api/Auth/registration", hashUser);
         if(responseMessage.IsSuccessStatusCode)
         {
             var authResponse = await responseMessage.Content.ReadFromJsonAsync<AuthResponse>();

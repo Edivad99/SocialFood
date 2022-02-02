@@ -7,7 +7,11 @@
 <h2>@(personalAccount ? "Il tuo profilo" : Username)</h2>
 @if(!personalAccount)
 {
-    <h6>@(isYourFriend ? "E'" : "Non è") tuo amico</h6>
+    <h6>@(friends.Where(u => u.Username == Username).Any() ? "È" : "Non è") tuo amico</h6>
+}
+else
+{ 
+    <h6>Amici: @friends.Count()</h6>
 }
 
 
@@ -17,9 +21,9 @@
     public string? Username { get; set; }
 
     bool personalAccount = false;
-    bool isYourFriend = false;
+    List<UserDTO> friends = new();
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnParametersSetAsync()
     {
         if (!string.IsNullOrWhiteSpace(Username))
         {
@@ -30,19 +34,15 @@
                 personalAccount = true;
                 Username = user.GetUsername();
             }
-            else
-            {
-                var url = "/api/Account/friends";
-                var responseMessage = await HttpClient.GetAsync(url);
-                if (responseMessage.IsSuccessStatusCode)
-                {
-                    List<UserDTO> friends = await responseMessage.Content.ReadFromJsonAsync<List<UserDTO>>();
-                    isYourFriend = friends.Where(u => u.Username == Username).Any();
-                }
-            }
         }
         else
             personalAccount = true;
+        var url = "/api/Account/friends";
+        var responseMessage = await HttpClient.GetAsync(url);
+        if (responseMessage.IsSuccessStatusCode)
+        {
+            friends = await responseMessage.Content.ReadFromJsonAsync<List<UserDTO>>();
+        }
     }
 }
 

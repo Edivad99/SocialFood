@@ -70,12 +70,17 @@ public class ImageController : ControllerBase
         return Ok(image);
     }
 
-    [HttpGet("myimages")]
+    [HttpGet("images/me")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetMyImages()
+    public async Task<IActionResult> GetMyImages() => await GetImagesFromUsername(User.GetUsername()!);
+
+    [HttpGet("images/{username}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetImagesFromUsername(string username)
     {
-        var images = await imageService.GetMyImageInfoAsync(User.GetId());
+        var images = await imageService.GetImageInfoFromUsernameAsync(username);
         if (images == null)
             return NotFound();
         return Ok(images);

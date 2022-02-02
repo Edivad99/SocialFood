@@ -40,12 +40,17 @@ public class ImageRepository : Repository, IImageRepository
         return await conn.QueryFirstOrDefaultAsync<Image>(sql, dynamicParameters);
     }
 
-    public async Task<IEnumerable<Image>> GetImagesFromUserID(string UserID)
+    public async Task<IEnumerable<Image>> GetImagesFromUsername(string username)
     {
-        var sql = @"SELECT * FROM `images` WHERE `IDUser` = @ID ORDER BY `Ora` DESC;";
+        var sql = @"SELECT `images`.* 
+                    FROM `images`
+                    INNER JOIN `users`
+                    ON users.`ID` = `images`.`IDUser`
+                    WHERE `Username` = @USERNAME
+                    ORDER BY `Ora` DESC;";
 
         var dynamicParameters = new DynamicParameters();
-        dynamicParameters.Add("@ID", UserID, DbType.String, ParameterDirection.Input);
+        dynamicParameters.Add("@USERNAME", username, DbType.String, ParameterDirection.Input);
 
         using var conn = GetDbConnection();
         return await conn.QueryAsync<Image>(sql, dynamicParameters);

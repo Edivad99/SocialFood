@@ -42,5 +42,29 @@ public class AccountRepository : Repository, IAccountRepository
         using var conn = GetDbConnection();
         return await conn.QueryAsync<User>(sql, dynamicParameters);
     }
+
+
+    private async Task ManageFriendships(string sql, string currentUserID, string friendUserID)
+    {
+        var dynamicParameters = new DynamicParameters();
+        dynamicParameters.Add("@IDUSERA", currentUserID, DbType.String, ParameterDirection.Input);
+        dynamicParameters.Add("@IDUSERB", friendUserID, DbType.String, ParameterDirection.Input);
+
+        using var conn = GetDbConnection();
+        await conn.ExecuteAsync(sql, dynamicParameters);
+    }
+
+    public async Task AddFriendAsync(string currentUserID, string friendUserID)
+    {
+        var sql = @"INSERT INTO `friendships` (`IDUserA`, `IDUserB`) VALUES
+                  (@IDUSERA, @IDUSERB);";
+        await ManageFriendships(sql, currentUserID, friendUserID);
+    }
+
+    public async Task RemoveFriendAsync(string currentUserID, string friendUserID)
+    {
+        var sql = @"DELETE FROM `friendships` WHERE `IDUserA` = @IDUSERA AND `IDUserB` = @IDUSERB;";
+        await ManageFriendships(sql, currentUserID, friendUserID);
+    }
 }
 

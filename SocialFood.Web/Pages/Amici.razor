@@ -36,7 +36,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        var url = "/api/Account/friends";
+        var url = "/api/Account/me/friends";
         var responseMessage = await HttpClient.GetAsync(url);
         if (responseMessage.IsSuccessStatusCode)
             friends = await responseMessage.Content.ReadFromJsonAsync<List<UserDTO>>();

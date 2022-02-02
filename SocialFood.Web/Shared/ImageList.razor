@@ -1,0 +1,25 @@
+﻿@if (images.Any())
+{
+    if (ChildContent != null)
+    {
+        <p>@ChildContent</p>
+    }
+
+    @foreach (var image in images)
+    {
+        <ImageView image="image" />
+    }
+}
+else
+{
+    <p>Nessuna immagine caricata</p>
+}
+
+@code {
+
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    [Parameter]
+    public List<ImageDTO> images { get; set; }
+}
+

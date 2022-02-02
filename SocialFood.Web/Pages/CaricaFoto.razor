@@ -7,7 +7,7 @@
 <h1>Carica foto</h1>
 
 <EditForm Model="uploadFile" OnSubmit="HandleUpload">
-    <ul style="list-style-type: none; padding-left:0px;">
+    <ul class="vertical-form">
         <li>
             <label for="file">Seleziona un file:</label>
             <InputFile id="file" OnChange="@LoadFile" />

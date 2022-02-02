@@ -3,17 +3,21 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @attribute [Authorize]
 
+<PageTitle>@(personalAccount ? "Il tuo profilo" : Username) | SocialFood</PageTitle>
 
 <h2>@(personalAccount ? "Il tuo profilo" : Username)</h2>
 @if(!personalAccount)
 {
-    <h6>@(friends.Where(u => u.Username == Username).Any() ? "È" : "Non è") tuo amico</h6>
+    bool isYourFriend = friends.Where(u => u.Username == Username).Any();
+    <ButtonFriend IsYourFriend="isYourFriend" FriendUsername="@Username" />
 }
 else
 { 
     <h6>Amici: @friends.Count()</h6>
 }
+<h6>Foto pubblicate: @images.Count()</h6>
 
+<ImageList images="images"/>
 
 @code{
 
@@ -22,26 +26,36 @@ else
 
     bool personalAccount = false;
     List<UserDTO> friends = new();
+    List<ImageDTO> images = new();
 
     protected override async Task OnParametersSetAsync()
     {
-        if (!string.IsNullOrWhiteSpace(Username))
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        if(string.IsNullOrWhiteSpace(Username))
         {
-            var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-            var user = authState.User;
-            if (user.GetUsername() == Username)
-            {
-                personalAccount = true;
-                Username = user.GetUsername();
-            }
-        }
-        else
+            // It's my account
             personalAccount = true;
-        var url = "/api/Account/friends";
-        var responseMessage = await HttpClient.GetAsync(url);
-        if (responseMessage.IsSuccessStatusCode)
+            Username = user.GetUsername();
+        }
+        else if(user.GetUsername() == Username)
         {
-            friends = await responseMessage.Content.ReadFromJsonAsync<List<UserDTO>>();
+            // Check if it's my account
+            personalAccount = true;
+            Username = user.GetUsername();
+        }
+
+        // Fetch friends
+        var friendsMessage = await HttpClient.GetAsync("/api/Account/me/friends");
+        if (friendsMessage.IsSuccessStatusCode)
+        {
+            friends = await friendsMessage.Content.ReadFromJsonAsync<List<UserDTO>>();
+        }
+        //Fetch images
+        var imagesMessage = await HttpClient.GetAsync($"/api/Image/images/{(personalAccount ? "me" : Username)}");
+        if (imagesMessage.IsSuccessStatusCode)
+        {
+            images = await imagesMessage.Content.ReadFromJsonAsync<List<ImageDTO>>();
         }
     }
 }

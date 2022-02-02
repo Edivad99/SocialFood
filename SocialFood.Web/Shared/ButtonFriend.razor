@@ -1,0 +1,39 @@
+﻿@inject HttpClient HttpClient
+
+@if (IsYourFriend)
+{
+    <button type="button" class="btn btn-outline-danger btn-sm" @onclick="UpdateFriendship">Rimuovi amico</button>
+}
+else
+{
+    <button type="button" class="btn btn-outline-success btn-sm" @onclick="UpdateFriendship">Aggiungi amico</button>
+}
+
+@code {
+    [Parameter]
+    public bool IsYourFriend { get; set; }
+
+    [Parameter]
+    public string FriendUsername { get; set; }
+
+    async void UpdateFriendship()
+    {
+        Console.WriteLine(FriendUsername);
+        var url = $"/api/Account/me/friends";
+        HttpResponseMessage responseMessage;
+        if (IsYourFriend)
+        {
+            responseMessage = await HttpClient.DeleteAsync($"{url}/{FriendUsername}");
+        }
+        else
+        {
+            responseMessage = await HttpClient.PostAsync($"{url}?friendUsername={FriendUsername}", null);
+        }
+        if(responseMessage.IsSuccessStatusCode)
+        {
+            IsYourFriend = !IsYourFriend;
+            StateHasChanged();
+        }
+    }
+}
+

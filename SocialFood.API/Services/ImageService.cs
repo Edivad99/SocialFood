@@ -72,9 +72,9 @@ public class ImageService : IImageService
         return (stream, image.ToImageDTO().ContentType);
     }
 
-    public async Task<IEnumerable<ImageDTO>> GetMyImageInfoAsync(Guid userID)
+    public async Task<IEnumerable<ImageDTO>> GetImageInfoFromUsernameAsync(string username)
     {
-        var images = await imageRepository.GetImagesFromUserID(userID.ToString());
+        var images = await imageRepository.GetImagesFromUsername(username);
         return images.Select(x => x.ToImageDTO());
     }
 }

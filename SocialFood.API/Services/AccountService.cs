@@ -33,5 +33,25 @@ public class AccountService : IAccountService
             return result.Select(u => u.ToUserDTO());
         return new List<UserDTO>();
     }
+
+    public async Task<bool> AddFriendAsync(Guid currentUserID, string friendUsername)
+    {
+        var friendUserList = await accountRespository.GetUserFromUsernameAsync(friendUsername);
+        var friend = friendUserList.FirstOrDefault();
+        if (friendUserList.Count() != 1 || friend == null)
+            return false;
+        await accountRespository.AddFriendAsync(currentUserID.ToString(), friend.ID);
+        return true;
+    }
+
+    public async Task<bool> RemoveFriendAsync(Guid currentUserID, string friendUsername)
+    {
+        var friendUserList = await accountRespository.GetUserFromUsernameAsync(friendUsername);
+        var friend = friendUserList.FirstOrDefault();
+        if (friendUserList.Count() != 1 || friend == null)
+            return false;
+        await accountRespository.RemoveFriendAsync(currentUserID.ToString(), friend.ID);
+        return true;
+    }
 }
 

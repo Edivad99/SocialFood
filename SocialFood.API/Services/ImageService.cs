@@ -41,29 +41,29 @@ public class ImageService : IImageService
         await imageRepository.SaveImage(image);
     }
 
-    public async Task<ImageDTO?> DeleteAsync(Guid userID, string imageID)
+    public async Task<ImageDTO?> DeleteAsync(Guid userID, Guid imageID)
     { 
         var image = await GetImageFullInfoAsync(imageID);
         if (image == null)
             return null;
         if (image.IdUser != userID.ToString())
             return null;
-        await imageRepository.DeleteImage(imageID);
+        await imageRepository.DeleteImage(imageID.ToString());
         await storageProvider.DeleteAsync(image.Path);
         return image.ToImageDTO();
     }
 
-    private async Task<Image> GetImageFullInfoAsync(string imageID) => await imageRepository.GetImageInfo(imageID);
+    private async Task<Image> GetImageFullInfoAsync(Guid imageID) => await imageRepository.GetImageInfo(imageID.ToString());
 
-    public async Task<ImageDTO?> GetImageInfoAsync(string imageID)
+    public async Task<ImageDTO?> GetImageInfoAsync(Guid imageID)
     {
-        var image = await imageRepository.GetImageInfo(imageID);
+        var image = await GetImageFullInfoAsync(imageID);
         if (image == null)
             return null;
         return image.ToImageDTO();
     }
 
-    public async Task<(Stream Stream, string ContentType)?> GetImageAsync(string imageID)
+    public async Task<(Stream Stream, string ContentType)?> GetImageAsync(Guid imageID)
     {
         var image = await GetImageFullInfoAsync(imageID);
         if (image == null)

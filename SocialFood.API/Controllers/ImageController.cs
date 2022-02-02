@@ -28,7 +28,7 @@ public class ImageController : ControllerBase
     [AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetImage(string imageID)
+    public async Task<IActionResult> GetImage(Guid imageID)
     {
         var image = await imageService.GetImageAsync(imageID);
         if (image == null)
@@ -39,7 +39,7 @@ public class ImageController : ControllerBase
     [HttpGet("{imageID}/info")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetImageInfo(string imageID)
+    public async Task<IActionResult> GetImageInfo(Guid imageID)
     {
         var image = await imageService.GetImageInfoAsync(imageID);
         if(image == null)
@@ -62,7 +62,7 @@ public class ImageController : ControllerBase
     [HttpDelete("{imageID}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Delete(string imageID)
+    public async Task<IActionResult> Delete(Guid imageID)
     {
         var image = await imageService.DeleteAsync(User.GetId(), imageID);
         if (image == null)

@@ -77,5 +77,23 @@ public class ImageService : IImageService
         var images = await imageRepository.GetImagesFromUsername(username);
         return images.Select(x => x.ToImageDTO());
     }
+
+    public async Task<bool> AddLikeToImage(Guid userID, Guid imageID)
+    {
+        var image = await GetImageFullInfoAsync(imageID);
+        if (image == null)
+            return false;
+        await imageRepository.AddLikeToImage(userID.ToString(), imageID.ToString());
+        return true;
+    }
+
+    public async Task<bool> RemoveLikeToImage(Guid userID, Guid imageID)
+    {
+        var image = await GetImageFullInfoAsync(imageID);
+        if (image == null)
+            return false;
+        await imageRepository.RemoveLikeToImage(userID.ToString(), imageID.ToString());
+        return true;
+    }
 }
 

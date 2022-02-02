@@ -1,0 +1,38 @@
+﻿@inject HttpClient HttpClient
+
+@if (Like)
+{
+    <button type="button" class="btn btn-danger btn-sm" @onclick="UpdateLike">Non mi piace</button>
+}
+else
+{
+    <button type="button" class="btn btn-success btn-sm" @onclick="UpdateLike">Mi piace</button>
+}
+
+@code {
+    [Parameter]
+    public bool Like { get; set; }
+
+    [Parameter]
+    public string ImageID { get; set; }
+
+    async void UpdateLike()
+    {
+        var url = $"/api/Image/{ImageID}/like";
+        HttpResponseMessage responseMessage;
+        if (Like)
+        {
+            responseMessage = await HttpClient.DeleteAsync(url);
+        }
+        else
+        {
+            responseMessage = await HttpClient.PutAsync(url, null);
+        }
+        if(responseMessage.IsSuccessStatusCode)
+        {
+            Like = !Like;
+            StateHasChanged();
+        }
+    }
+}
+

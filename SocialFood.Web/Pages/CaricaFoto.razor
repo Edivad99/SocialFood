@@ -1,5 +1,6 @@
 ﻿@page "/caricafoto"
 @inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
 @attribute [Authorize]
 
 <PageTitle>Carica foto | SocialFood</PageTitle>
@@ -34,7 +35,7 @@
     void LoadFile(InputFileChangeEventArgs e)
     {
         var file = e.GetMultipleFiles().FirstOrDefault();
-        if(file != null)
+        if (file != null)
         {
             uploadFile.FileContent = new StreamContent(file.OpenReadStream(maxFileSize));
             uploadFile.FileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
@@ -52,11 +53,12 @@
 
         var uploadResponse = await HttpClient.PostAsync("/api/Image", content);
 
-        if(uploadResponse.StatusCode == HttpStatusCode.NoContent)
+        if (uploadResponse.StatusCode == HttpStatusCode.NoContent)
         {
             Console.WriteLine("Caricamento completato");
             uploadFile.FileContent.Dispose();
             uploadFile = new();
+            NavigationManager.NavigateTo("/profile");
         }
     }
 

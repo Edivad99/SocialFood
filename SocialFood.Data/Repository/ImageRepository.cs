@@ -66,5 +66,28 @@ public class ImageRepository : Repository, IImageRepository
         using var conn = GetDbConnection();
         await conn.ExecuteAsync(sql, dynamicParameters);
     }
+
+    private async Task ManageLikes(string sql, string currentUserID, string imageID)
+    {
+        var dynamicParameters = new DynamicParameters();
+        dynamicParameters.Add("@IDUSER", currentUserID, DbType.String, ParameterDirection.Input);
+        dynamicParameters.Add("@IDIMAGE", imageID, DbType.String, ParameterDirection.Input);
+
+        using var conn = GetDbConnection();
+        await conn.ExecuteAsync(sql, dynamicParameters);
+    }
+
+    public async Task AddLikeToImage(string currentUserID, string friendUserID)
+    {
+        var sql = @"INSERT INTO `likes` (`IDUser`, `IDImage`) VALUES
+                  (@IDUSER, @IDIMAGE);";
+        await ManageLikes(sql, currentUserID, friendUserID);
+    }
+
+    public async Task RemoveLikeToImage(string currentUserID, string friendUserID)
+    {
+        var sql = @"DELETE FROM `likes` WHERE `IDUser` = @IDUSER AND `IDImage` = @IDIMAGE;";
+        await ManageLikes(sql, currentUserID, friendUserID);
+    }
 }
 

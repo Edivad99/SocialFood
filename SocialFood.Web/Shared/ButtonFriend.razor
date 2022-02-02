@@ -18,8 +18,7 @@ else
 
     async void UpdateFriendship()
     {
-        Console.WriteLine(FriendUsername);
-        var url = $"/api/Account/me/friends";
+        var url = "/api/Account/me/friends";
         HttpResponseMessage responseMessage;
         if (IsYourFriend)
         {

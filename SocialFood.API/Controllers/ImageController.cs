@@ -36,6 +36,35 @@ public class ImageController : ControllerBase
         return File(image.Value.Stream, image.Value.ContentType);
     }
 
+    [HttpDelete("{imageID}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete(Guid imageID)
+    {
+        var image = await imageService.DeleteAsync(User.GetId(), imageID);
+        if (image == null)
+            return NotFound();
+        return Ok(image);
+    }
+
+    [HttpPut("{imageID}/like")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> AddLikeToImage(Guid imageID)
+    {
+        var response = await imageService.AddLikeToImage(User.GetId(), imageID);
+        return response ? Ok() : BadRequest();
+    }
+
+    [HttpDelete("{imageID}/like")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> RemoveLikeToImage(Guid imageID)
+    {
+        var response = await imageService.RemoveLikeToImage(User.GetId(), imageID);
+        return response ? Ok() : BadRequest();
+    }
+
     [HttpGet("{imageID}/info")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -57,17 +86,6 @@ public class ImageController : ControllerBase
 
         await imageService.UploadAsync(User.GetId(), streamFileContent, request.Descrizione, request.Ora, request.Luogo);
         return NoContent();
-    }
-
-    [HttpDelete("{imageID}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Delete(Guid imageID)
-    {
-        var image = await imageService.DeleteAsync(User.GetId(), imageID);
-        if (image == null)
-            return NotFound();
-        return Ok(image);
     }
 
     [HttpGet("images/me")]

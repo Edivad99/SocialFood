@@ -43,10 +43,10 @@ public class AccountController : ControllerBase
         return Ok(response);
     }
 
-    [HttpPost("me/friends")]
+    [HttpPut("me/friends")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> AddFriend([FromQuery] string friendUsername)
+    public async Task<IActionResult> AddFriend(string friendUsername)
     {
         var response = await accountService.AddFriendAsync(User.GetId(), friendUsername);
         return response ? Ok() : BadRequest();

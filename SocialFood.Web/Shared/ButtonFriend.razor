@@ -27,7 +27,7 @@ else
         }
         else
         {
-            responseMessage = await HttpClient.PostAsync($"{url}?friendUsername={FriendUsername}", null);
+            responseMessage = await HttpClient.PutAsync($"{url}?friendUsername={FriendUsername}",null);
         }
         if(responseMessage.IsSuccessStatusCode)
         {

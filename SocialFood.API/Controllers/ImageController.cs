@@ -103,4 +103,12 @@ public class ImageController : ControllerBase
             return NotFound();
         return Ok(images);
     }
+
+    [HttpGet("latest")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetLatestImagesFromFriends()
+    {
+        var images = await imageService.GetLatestImagesFromFriendsAsync(User.GetId());
+        return Ok(images);
+    }
 }

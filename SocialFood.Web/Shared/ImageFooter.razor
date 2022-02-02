@@ -1,0 +1,20 @@
+﻿@if (ShowUsername)
+{
+    <small class="text-muted">Di <NavLink href="@GetLink()">@Username</NavLink> caricata @BuildFooter()</small>
+}
+else
+{
+    <small class="text-muted">Caricata @BuildFooter()</small>
+}
+
+@code{
+    [Parameter]
+    public bool ShowUsername { get; set; }
+    [Parameter]
+    public string Username { get; set; }
+    [Parameter]
+    public DateTime DateTime { get; set; }
+
+    string BuildFooter() => $"il {DateTime.ToShortDateString()} alle {DateTime.ToShortTimeString()}";
+    string GetLink() => $"profile/{Username}";
+}

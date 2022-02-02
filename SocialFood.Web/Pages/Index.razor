@@ -8,10 +8,20 @@
     <h2>Bentornato, @context.User.GetFirstName()!</h2>
 </AuthorizeView>
 
-
-Ecco quello che è successo mentre non c'eri
+<ImageList images="@images" ShowUsername="true">
+    Ecco quello che è successo mentre non c'eri
+</ImageList>
 
 
 @code{
+    List<ImageDTO> images = new();
 
+    protected override async Task OnParametersSetAsync()
+    {
+        var imagesMessage = await HttpClient.GetAsync($"/api/Image/latest");
+        if (imagesMessage.IsSuccessStatusCode)
+        {
+            images = await imagesMessage.Content.ReadFromJsonAsync<List<ImageDTO>>();
+        }
+    }
 }

@@ -11,4 +11,5 @@ public interface IImageRepository
     Task<IEnumerable<User>> GetImageLikes(string imageID);
     Task SaveImage(Image image);
     Task RemoveLikeToImage(string currentUserID, string friendUserID);
+    Task<IEnumerable<Image>> GetLatestImagesFromFriends(string currentUserID);
 }

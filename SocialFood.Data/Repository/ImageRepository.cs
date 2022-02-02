@@ -31,7 +31,11 @@ public class ImageRepository : Repository, IImageRepository
 
     public async Task<Image> GetImageInfo(string ImageID)
     {
-        var sql = @"SELECT * FROM `images` WHERE `ID` = @ID;";
+        var sql = @"SELECT `images`.*, `users`.Username
+                    FROM `images`
+                    INNER JOIN `users`
+                    ON users.`ID` = `images`.`IDUser`
+                    WHERE `images`.`ID` = @ID;";
 
         var dynamicParameters = new DynamicParameters();
         dynamicParameters.Add("@ID", ImageID, DbType.String, ParameterDirection.Input);
@@ -42,7 +46,7 @@ public class ImageRepository : Repository, IImageRepository
 
     public async Task<IEnumerable<Image>> GetImagesFromUsername(string username)
     {
-        var sql = @"SELECT `images`.* 
+        var sql = @"SELECT `images`.*, `users`.Username
                     FROM `images`
                     INNER JOIN `users`
                     ON users.`ID` = `images`.`IDUser`
@@ -95,7 +99,7 @@ public class ImageRepository : Repository, IImageRepository
         var sql = @"SELECT `users`.* 
                     FROM `users`
                     INNER JOIN `likes`
-                    ON `likes`.`IDuser` = `users`.`ID`
+                    ON `likes`.`IDUser` = `users`.`ID`
                     WHERE likes.`IDImage` = @IDIMAGE;";
 
         var dynamicParameters = new DynamicParameters();
@@ -103,6 +107,22 @@ public class ImageRepository : Repository, IImageRepository
 
         using var conn = GetDbConnection();
         return await conn.QueryAsync<User>(sql, dynamicParameters);
+    }
+
+    public async Task<IEnumerable<Image>> GetLatestImagesFromFriends(string currentUserID)
+    {
+        var sql = @"SELECT `images`.*, `users`.Username
+                    FROM `images`
+                    INNER JOIN `users` ON `users`.`ID` = `images`.`IDUser`
+                    WHERE images.`IDUser` IN (SELECT IDUserB
+                        FROM `friendships`
+                        WHERE `IDUserA` = @USERID)
+                    ORDER BY `Ora` DESC;";
+        var dynamicParameters = new DynamicParameters();
+        dynamicParameters.Add("@USERID", currentUserID, DbType.String, ParameterDirection.Input);
+
+        using var conn = GetDbConnection();
+        return await conn.QueryAsync<Image>(sql, dynamicParameters);
     }
 }
 

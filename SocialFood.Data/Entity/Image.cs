@@ -11,4 +11,5 @@ public class Image
     public DateTime Ora { get; set; }
     public string Descrizione { get; set; }
     public string Luogo { get; set; }
+    public string Username { get; set; }
 }

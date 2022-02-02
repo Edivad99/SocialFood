@@ -11,4 +11,5 @@ public class ImageDTO
     public string ContentType { get; set; }
     public bool YourLike { get; set; }
     public int Likes { get; set; }
+    public string Username { get; set; }
 }

@@ -96,6 +96,12 @@ public class ImageService : IImageService
         return true;
     }
 
+    public async Task<IEnumerable<ImageDTO>> GetLatestImagesFromFriendsAsync(Guid userID)
+    {
+        var images = await imageRepository.GetLatestImagesFromFriends(userID.ToString());
+        return images.Select(x => ConvertToImageDTO(userID, x)).Select(t => t.Result);
+    }
+
     private async Task<ImageDTO> ConvertToImageDTO(Guid userID, Image image, bool skipLikes = false)
     {
         var result = new ImageDTO()
@@ -106,7 +112,8 @@ public class ImageService : IImageService
             Length = image.Length,
             Luogo = image.Luogo,
             Ora = image.Ora,
-            ContentType = image.GetMimeMapping()
+            ContentType = image.GetMimeMapping(),
+            Username = image.Username
         };
 
         if(!skipLikes)

@@ -7,7 +7,7 @@
 
     @foreach (var image in images)
     {
-        <ImageView image="image" />
+        <ImageView image="image" ShowUsername="ShowUsername"/>
     }
 }
 else
@@ -21,5 +21,7 @@ else
     public RenderFragment? ChildContent { get; set; }
     [Parameter]
     public List<ImageDTO> images { get; set; }
+    [Parameter]
+    public bool ShowUsername { get; set; }
 }
 

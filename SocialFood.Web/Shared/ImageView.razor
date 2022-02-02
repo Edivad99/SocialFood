@@ -10,13 +10,15 @@
         <li class="list-group-item"><ButtonLike Likes="@image.Likes" ImageID="@image.Id" Like="@image.YourLike"/></li>
     </ul>
     <div class="card-footer">
-        <small class="text-muted">Caricata il @image.Ora.ToShortDateString() alle @image.Ora.ToShortTimeString()</small>
+        <ImageFooter ShowUsername="ShowUsername" Username="@image.Username" DateTime="@image.Ora"/>
     </div>
 </div>
 
 @code {
     [Parameter]
     public ImageDTO image { get; set; }
+    [Parameter]
+    public bool ShowUsername { get; set; }
 
     string GetImageUrl() => HttpClient.BaseAddress + "api/Image/" + image.Id;
 }

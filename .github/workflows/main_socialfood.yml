@@ -49,15 +49,25 @@ jobs:
           ls -la ${{env.DOTNET_ROOT}}/myapp/web
 
       #substitute production appsettings entries to appsettings json file
-      - name: App Settings Variable Substitution
+      - name: App Settings Variable Substitution Server
         uses: microsoft/variable-substitution@v1
         with:
-          files: '${{env.DOTNET_ROOT}}/myapp/appsettings.json'
+          files: '${{env.DOTNET_ROOT}}/myapp/server/appsettings.json'
         env:
           JwtSettings.SecurityKey: ${{ secrets.JWTSECURITYKEY }}
           ConnectionStrings.MySQL: ${{ secrets.MYSQL }}
           ConnectionStrings.StorageConnection: ${{ secrets.AZURESTORAGE }}
           AppSettings.ContainerName: ${{ env.CONTAINERNAME }}
+
+      - name: App Settings Variable Substitution Web
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: '${{env.DOTNET_ROOT}}/myapp/web/**/appsettings.json'
+        env:
+          ApiUrl: ${{ secrets.APIURL }}
+
+      - name: Check
+        run: cat ${{env.DOTNET_ROOT}}/myapp/web/**/appsettings.json
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2

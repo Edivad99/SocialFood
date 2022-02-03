@@ -25,10 +25,28 @@ jobs:
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
-      - name: dotnet publish
+      - name: dotnet publish Server API
         run: |
-          dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
-          ls -la ${{env.DOTNET_ROOT}}/myapp
+          cd SocialFood.API
+          dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp/server
+          cd ..
+          cd SocialFood.Data
+          dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp/server
+          cd ..
+          cd SocialFood.Shared
+          dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp/server
+          cd ..
+          cd SocialFood.StorageProviders
+          dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp/server
+          cd ..
+          ls -la ${{env.DOTNET_ROOT}}/myapp/server
+
+      - name: dotnet publish Web
+        run: |
+          cd SocialFood.Web
+          dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp/web
+          cd ..
+          ls -la ${{env.DOTNET_ROOT}}/myapp/web
 
       #substitute production appsettings entries to appsettings json file
       - name: App Settings Variable Substitution

@@ -46,7 +46,7 @@ jobs:
           cd SocialFood.Web
           dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp/web
           cd ..
-          ls -la ${{env.DOTNET_ROOT}}/myapp/web
+          ls -la ${{env.DOTNET_ROOT}}/myapp/web/wwwroot/
 
       #substitute production appsettings entries to appsettings json file
       - name: App Settings Variable Substitution Server

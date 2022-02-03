@@ -8,6 +8,7 @@
 <h2>@(personalAccount ? "Il tuo profilo" : Username)</h2>
 @if(!personalAccount)
 {
+    <h6>(@userDTOSearched.Name @userDTOSearched.Surname)</h6>
     bool isYourFriend = friends.Where(u => u.Username == Username).Any();
     <ButtonFriend IsYourFriend="isYourFriend" FriendUsername="@Username" />
 }
@@ -27,6 +28,7 @@ else
     bool personalAccount = false;
     List<UserDTO> friends = new();
     List<ImageDTO> images = new();
+    UserDTO userDTOSearched = new();
 
     protected override async Task OnParametersSetAsync()
     {
@@ -43,6 +45,14 @@ else
             // Check if it's my account
             personalAccount = true;
             Username = user.GetUsername();
+        }
+        else
+        {
+            var userSearched = await HttpClient.GetAsync($"/api/Account/finduser/{Username}");
+            if(userSearched.IsSuccessStatusCode)
+            {
+                userDTOSearched = (await userSearched.Content.ReadFromJsonAsync<List<UserDTO>>()).FirstOrDefault();
+            }
         }
 
         // Fetch friends

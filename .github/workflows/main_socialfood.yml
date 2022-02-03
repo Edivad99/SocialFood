@@ -22,6 +22,24 @@ jobs:
           dotnet-version: '6.0.x'
           include-prerelease: true
 
+      #substitute production appsettings entries to appsettings json file
+      - name: App Settings Variable Substitution Server
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: 'SocialFood.API/appsettings.json'
+        env:
+          JwtSettings.SecurityKey: ${{ secrets.JWTSECURITYKEY }}
+          ConnectionStrings.MySQL: ${{ secrets.MYSQL }}
+          ConnectionStrings.StorageConnection: ${{ secrets.AZURESTORAGE }}
+          AppSettings.ContainerName: ${{ env.CONTAINERNAME }}
+
+      - name: App Settings Variable Substitution Web
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: 'SocialFood.Web/wwwroot/appsettings.json'
+        env:
+          ApiUrl: ${{ secrets.APIURL }}
+
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
@@ -45,29 +63,9 @@ jobs:
         run: |
           cd SocialFood.Web
           dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp/web
-          cd ..
-          ls -la ${{env.DOTNET_ROOT}}/myapp/web/wwwroot/
-
-      #substitute production appsettings entries to appsettings json file
-      - name: App Settings Variable Substitution Server
-        uses: microsoft/variable-substitution@v1
-        with:
-          files: '${{env.DOTNET_ROOT}}/myapp/server/appsettings.json'
-        env:
-          JwtSettings.SecurityKey: ${{ secrets.JWTSECURITYKEY }}
-          ConnectionStrings.MySQL: ${{ secrets.MYSQL }}
-          ConnectionStrings.StorageConnection: ${{ secrets.AZURESTORAGE }}
-          AppSettings.ContainerName: ${{ env.CONTAINERNAME }}
-
-      - name: App Settings Variable Substitution Web
-        uses: microsoft/variable-substitution@v1
-        with:
-          files: '${{env.DOTNET_ROOT}}/myapp/web/**/appsettings.json'
-        env:
-          ApiUrl: ${{ secrets.APIURL }}
 
       - name: Check
-        run: cat ${{env.DOTNET_ROOT}}/myapp/web/**/appsettings.json
+        run: cat ${{env.DOTNET_ROOT}}/myapp/web/wwwroot/appsettings.json
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2

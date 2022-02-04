@@ -24,17 +24,10 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Login(LoginRequest request)
     {
-        try
-        {
-            var response = await identityService.LoginAsync(request);
-            if (response != null)
-                return Ok(response);
-            return BadRequest();
-        } catch(Exception e)
-        {
-            return StatusCode(500, e.Message);
-        }
-        
+        var response = await identityService.LoginAsync(request);
+        if (response != null)
+            return Ok(response);
+        return BadRequest();
     }
 
     [HttpPost("registration")]

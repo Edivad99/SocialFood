@@ -81,11 +81,18 @@ public class ImageController : ControllerBase
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     public async Task<IActionResult> Upload([FromForm] UploadImageRequest request)
     {
-        var streamFileContent = new StreamFileContent(request.File.OpenReadStream(), request.File.ContentType,
+        try
+        {
+            var streamFileContent = new StreamFileContent(request.File.OpenReadStream(), request.File.ContentType,
             request.File.FileName, Convert.ToInt32(request.File.Length));
 
-        await imageService.UploadAsync(User.GetId(), streamFileContent, request.Descrizione, request.Ora, request.Luogo);
-        return NoContent();
+            await imageService.UploadAsync(User.GetId(), streamFileContent, request.Descrizione, request.Ora, request.Luogo);
+            return NoContent();
+        } catch(Exception e)
+        {
+            return StatusCode(500, e.Message + "\n" + e.StackTrace);
+        }
+        
     }
 
     [HttpGet("images/me")]

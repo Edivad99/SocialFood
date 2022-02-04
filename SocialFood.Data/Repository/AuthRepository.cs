@@ -7,8 +7,11 @@ namespace SocialFood.Data.Repository;
 
 public class AuthRepository : Repository, IAuthRepository
 {
+    private readonly string connectionString;
+
     public AuthRepository(string connectionString) : base(connectionString)
     {
+        this.connectionString = connectionString;
     }
 
     public async Task<User?> GetUserAsync(string username, string password)
@@ -21,7 +24,9 @@ public class AuthRepository : Repository, IAuthRepository
         dynamicParameters.Add("@USERNAME", username, DbType.String, ParameterDirection.Input);
         dynamicParameters.Add("@PASSWORD", password, DbType.String, ParameterDirection.Input);
 
+        throw new Exception(connectionString);
         using var conn = GetDbConnection();
+
         return await conn.QueryFirstOrDefaultAsync<User>(sql, dynamicParameters);
     }
 

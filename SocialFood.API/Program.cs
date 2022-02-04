@@ -9,7 +9,6 @@ using SocialFood.Data.Repository;
 using SocialFood.StorageProviders;
 
 var builder = WebApplication.CreateBuilder(args);
-const bool LOCALSTORAGE = false;
 
 var jwtSettings = Configure<JwtSettings>("JwtSettings");
 string connectionString = builder.Configuration.GetConnectionString("MySQL");
@@ -81,7 +80,7 @@ builder.Services.AddAuthorization(options =>
     options.FallbackPolicy = options.DefaultPolicy;
 });
 
-if (LOCALSTORAGE)
+if (builder.Configuration.GetValue<bool>("AppSettings:UseLocalStorage"))
 {
     builder.Services.AddFileSystemStorageProvider(options =>
     {

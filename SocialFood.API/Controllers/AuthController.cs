@@ -32,7 +32,7 @@ public class AuthController : ControllerBase
             return BadRequest();
         } catch(Exception e)
         {
-            return StatusCode(500, e.StackTrace);
+            return StatusCode(500, e.Message);
         }
         
     }

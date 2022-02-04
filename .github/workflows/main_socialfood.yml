@@ -16,8 +16,8 @@ jobs:
     name: Build and Deploy static web
     steps:
       - uses: actions/checkout@v2
-          with:
-            submodules: true
+        with:
+          submodules: true
 
       - name: App Settings Variable Substitution Web
         uses: microsoft/variable-substitution@v1

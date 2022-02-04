@@ -12,12 +12,10 @@ namespace SocialFood.API.Controllers;
 public class AccountController : ControllerBase
 {
     private readonly IAccountService accountService;
-    private readonly ILogger<AccountController> logger;
 
-    public AccountController(IAccountService accountService, ILogger<AccountController> logger)
+    public AccountController(IAccountService accountService)
     {
         this.accountService = accountService;
-        this.logger = logger;
     }
 
     [HttpGet("finduser/{username}")]
@@ -26,9 +24,7 @@ public class AccountController : ControllerBase
     public async Task<IActionResult> GetUserFromUsernameAsync(string username)
     {
         var response = await accountService.GetUsersFromUsernameAsync(username);
-        if (!response.Any())
-            return NotFound(response);
-        return Ok(response);
+        return StatusCode(response.StatusCode, response.Result);
     }
 
     [HttpGet("me/friends")]
@@ -40,7 +36,7 @@ public class AccountController : ControllerBase
     public async Task<IActionResult> GetUsersFriends(string username)
     {
         var response = await accountService.GetUsersFriendsAsync(username);
-        return Ok(response);
+        return StatusCode(response.StatusCode, response.Result);
     }
 
     [HttpPut("me/friends")]
@@ -49,7 +45,7 @@ public class AccountController : ControllerBase
     public async Task<IActionResult> AddFriend(string friendUsername)
     {
         var response = await accountService.AddFriendAsync(User.GetId(), friendUsername);
-        return response ? Ok() : BadRequest();
+        return StatusCode(response.StatusCode);
     }
 
     [HttpDelete("me/friends/{friendUsername}")]
@@ -58,6 +54,6 @@ public class AccountController : ControllerBase
     public async Task<IActionResult> RemoveFriend(string friendUsername)
     {
         var response = await accountService.RemoveFriendAsync(User.GetId(), friendUsername);
-        return response ? Ok() : BadRequest();
+        return StatusCode(response.StatusCode);
     }
 }

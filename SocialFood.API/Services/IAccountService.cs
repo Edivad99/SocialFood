@@ -1,11 +1,12 @@
-﻿using SocialFood.Shared.Models;
+﻿using SocialFood.API.Models;
+using SocialFood.Shared.Models;
 
 namespace SocialFood.API.Services;
 
 public interface IAccountService
 {
-    Task<bool> AddFriendAsync(Guid currentUserID, string friendUsername);
-    Task<IEnumerable<UserDTO>> GetUsersFriendsAsync(string username);
-    Task<IEnumerable<UserDTO>> GetUsersFromUsernameAsync(string username);
-    Task<bool> RemoveFriendAsync(Guid currentUserID, string friendUsername);
+    Task<Response> AddFriendAsync(Guid currentUserID, string friendUsername);
+    Task<Response<IEnumerable<UserDTO>>> GetUsersFriendsAsync(string username);
+    Task<Response<IEnumerable<UserDTO>>> GetUsersFromUsernameAsync(string username);
+    Task<Response> RemoveFriendAsync(Guid currentUserID, string friendUsername);
 }

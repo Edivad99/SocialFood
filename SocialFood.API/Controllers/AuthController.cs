@@ -10,12 +10,10 @@ namespace SocialFood.API.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IIdentityService identityService;
-    private readonly ILogger<AuthController> logger;
 
-    public AuthController(IIdentityService identityService, ILogger<AuthController> logger)
+    public AuthController(IIdentityService identityService)
     {
         this.identityService = identityService;
-        this.logger = logger;
     }
 
     [HttpPost("login")]

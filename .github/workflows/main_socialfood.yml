@@ -62,7 +62,7 @@ jobs:
           JwtSettings.SecurityKey: ${{ secrets.JWTSECURITYKEY }}
           ConnectionStrings.MySQL: ${{ secrets.MYSQL }}
           ConnectionStrings.StorageConnection: ${{ secrets.AZURESTORAGE }}
-          AppSettings.ContainerName: ${{ env.CONTAINERNAME }}
+          AppSettings.ContainerName: ${{ secrets.CONTAINERNAME }}
 
       - name: Build with dotnet
         run: dotnet build --configuration Release

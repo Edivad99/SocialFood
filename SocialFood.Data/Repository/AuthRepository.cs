@@ -24,7 +24,6 @@ public class AuthRepository : Repository, IAuthRepository
         dynamicParameters.Add("@USERNAME", username, DbType.String, ParameterDirection.Input);
         dynamicParameters.Add("@PASSWORD", password, DbType.String, ParameterDirection.Input);
 
-        throw new Exception(connectionString);
         using var conn = GetDbConnection();
 
         return await conn.QueryFirstOrDefaultAsync<User>(sql, dynamicParameters);

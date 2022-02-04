@@ -3,7 +3,7 @@ USE socialfood;
 
 CREATE TABLE users (
   `ID` varchar(40) NOT NULL,
-  `User` varchar(20) NOT NULL,
+  `Username` varchar(20) NOT NULL,
   `Password` varchar(256) NOT NULL,
   `Firstname` varchar(30) NOT NULL,
   `Lastname` varchar(30) NOT NULL,

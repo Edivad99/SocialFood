@@ -10,7 +10,37 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+
+  build_and_deploy_static_web:
+    runs-on: ubuntu-latest
+    name: Build and Deploy static web
+    steps:
+      - uses: actions/checkout@v2
+          with:
+            submodules: true
+
+      - name: App Settings Variable Substitution Web
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: 'SocialFood.Web/wwwroot/appsettings.json'
+        env:
+          ApiUrl: ${{ secrets.APIURL }}
+
+      - name: Build And Deploy
+        id: builddeploy
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_PURPLE_MOSS_0BF03E903 }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }} # Used for Github integrations (i.e. PR comments)
+          action: "upload"
+          ###### Repository/Build Configurations - These values can be configured to match your app requirements. ######
+          # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
+          app_location: "SocialFood.Web" # App source code path
+          api_location: "" # Api source code path - optional
+          output_location: "wwwroot" # Built app content directory - optional
+          ###### End of Repository/Build Configurations ######
+
+  build_api_service:
     runs-on: ubuntu-latest
 
     steps:
@@ -33,39 +63,23 @@ jobs:
           ConnectionStrings.StorageConnection: ${{ secrets.AZURESTORAGE }}
           AppSettings.ContainerName: ${{ env.CONTAINERNAME }}
 
-      - name: App Settings Variable Substitution Web
-        uses: microsoft/variable-substitution@v1
-        with:
-          files: 'SocialFood.Web/wwwroot/appsettings.json'
-        env:
-          ApiUrl: ${{ secrets.APIURL }}
-
       - name: Build with dotnet
         run: dotnet build --configuration Release
 
       - name: dotnet publish Server API
         run: |
           cd SocialFood.API
-          dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp/server
+          dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
           cd ..
           cd SocialFood.Data
-          dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp/server
+          dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
           cd ..
           cd SocialFood.Shared
-          dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp/server
+          dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
           cd ..
           cd SocialFood.StorageProviders
-          dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp/server
+          dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
           cd ..
-          ls -la ${{env.DOTNET_ROOT}}/myapp/server
-
-      - name: dotnet publish Web
-        run: |
-          cd SocialFood.Web
-          dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp/web
-
-      - name: Check
-        run: cat ${{env.DOTNET_ROOT}}/myapp/web/wwwroot/appsettings.json
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2

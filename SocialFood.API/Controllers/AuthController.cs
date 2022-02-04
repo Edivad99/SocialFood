@@ -25,9 +25,7 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Login(LoginRequest request)
     {
         var response = await identityService.LoginAsync(request);
-        if (response != null)
-            return Ok(response);
-        return BadRequest();
+        return StatusCode(response.StatusCode, response.Result);
     }
 
     [HttpPost("registration")]
@@ -37,9 +35,7 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Registration(RegistrationRequest request)
     {
         var response = await identityService.RegistrationAsync(request);
-        if (response != null)
-            return Ok(response);
-        return BadRequest();
+        return StatusCode(response.StatusCode, response.Result);
     }
 }
 

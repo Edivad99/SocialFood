@@ -9,6 +9,7 @@ using SocialFood.Data.Repository;
 using SocialFood.StorageProviders;
 
 var builder = WebApplication.CreateBuilder(args);
+const bool LOCALSTORAGE = false;
 
 var jwtSettings = Configure<JwtSettings>("JwtSettings");
 string connectionString = builder.Configuration.GetConnectionString("MySQL");
@@ -80,16 +81,21 @@ builder.Services.AddAuthorization(options =>
     options.FallbackPolicy = options.DefaultPolicy;
 });
 
-/*builder.Services.AddFileSystemStorageProvider(options =>
+if (LOCALSTORAGE)
 {
-    options.StorageFolder = builder.Configuration.GetValue<string>("AppSettings:StorageFolder");
-});*/
-
-builder.Services.AddAzureStorageProvider(options =>
+    builder.Services.AddFileSystemStorageProvider(options =>
+    {
+        options.StorageFolder = builder.Configuration.GetValue<string>("AppSettings:StorageFolder");
+    });
+}
+else
 {
-    options.ConnectionString = builder.Configuration.GetConnectionString("StorageConnection");
-    options.ContainerName = builder.Configuration.GetValue<string>("AppSettings:ContainerName");
-});
+    builder.Services.AddAzureStorageProvider(options =>
+    {
+        options.ConnectionString = builder.Configuration.GetConnectionString("StorageConnection");
+        options.ContainerName = builder.Configuration.GetValue<string>("AppSettings:ContainerName");
+    });
+}
 
 builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddScoped<IAccountService, AccountService>();

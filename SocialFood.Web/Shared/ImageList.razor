@@ -5,10 +5,14 @@
         <p>@ChildContent</p>
     }
 
-    @foreach (var image in images)
-    {
-        <ImageView image="image" ShowUsername="ShowUsername"/>
-    }
+    <Virtualize Items="@images" Context="image">
+        <ItemContent>
+            <ImageView image="image" ShowUsername="ShowUsername" />
+        </ItemContent>
+        <Placeholder>
+            <p>Caricamento immagine in corso...</p>
+        </Placeholder>
+    </Virtualize>
 }
 else
 {

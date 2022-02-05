@@ -80,16 +80,21 @@ builder.Services.AddAuthorization(options =>
     options.FallbackPolicy = options.DefaultPolicy;
 });
 
-/*builder.Services.AddFileSystemStorageProvider(options =>
+if (builder.Configuration.GetValue<bool>("AppSettings:UseLocalStorage"))
 {
-    options.StorageFolder = builder.Configuration.GetValue<string>("AppSettings:StorageFolder");
-});*/
-
-builder.Services.AddAzureStorageProvider(options =>
+    builder.Services.AddFileSystemStorageProvider(options =>
+    {
+        options.StorageFolder = builder.Configuration.GetValue<string>("AppSettings:StorageFolder");
+    });
+}
+else
 {
-    options.ConnectionString = builder.Configuration.GetConnectionString("StorageConnection");
-    options.ContainerName = builder.Configuration.GetValue<string>("AppSettings:ContainerName");
-});
+    builder.Services.AddAzureStorageProvider(options =>
+    {
+        options.ConnectionString = builder.Configuration.GetConnectionString("StorageConnection");
+        options.ContainerName = builder.Configuration.GetValue<string>("AppSettings:ContainerName");
+    });
+}
 
 builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddScoped<IAccountService, AccountService>();

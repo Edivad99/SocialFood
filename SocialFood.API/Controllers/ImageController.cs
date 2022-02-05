@@ -16,12 +16,10 @@ namespace SocialFood.API.Controllers;
 public class ImageController : ControllerBase
 {
     private readonly IImageService imageService;
-    private readonly ILogger<ImageController> logger;
 
-    public ImageController(IImageService imageService, ILogger<ImageController> logger)
+    public ImageController(IImageService imageService)
     {
         this.imageService = imageService;
-        this.logger = logger;
     }
 
     [HttpGet("{imageID}")]
@@ -42,9 +40,7 @@ public class ImageController : ControllerBase
     public async Task<IActionResult> Delete(Guid imageID)
     {
         var image = await imageService.DeleteAsync(User.GetId(), imageID);
-        if (image == null)
-            return NotFound();
-        return Ok(image);
+        return StatusCode(image.StatusCode, image);
     }
 
     [HttpPut("{imageID}/like")]
@@ -52,8 +48,8 @@ public class ImageController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddLikeToImage(Guid imageID)
     {
-        var response = await imageService.AddLikeToImage(User.GetId(), imageID);
-        return response ? Ok() : BadRequest();
+        var response = await imageService.AddLikeToImageAsync(User.GetId(), imageID);
+        return StatusCode(response.StatusCode);
     }
 
     [HttpDelete("{imageID}/like")]
@@ -61,8 +57,8 @@ public class ImageController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> RemoveLikeToImage(Guid imageID)
     {
-        var response = await imageService.RemoveLikeToImage(User.GetId(), imageID);
-        return response ? Ok() : BadRequest();
+        var response = await imageService.RemoveLikeToImageAsync(User.GetId(), imageID);
+        return StatusCode(response.StatusCode);
     }
 
     [HttpGet("{imageID}/info")]
@@ -70,10 +66,8 @@ public class ImageController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetImageInfo(Guid imageID)
     {
-        var image = await imageService.GetImageInfoAsync(User.GetId(), imageID);
-        if(image == null)
-            return NotFound();
-        return Ok(image);
+        var response = await imageService.GetImageInfoAsync(User.GetId(), imageID);
+        return StatusCode(response.StatusCode, response.Result);
     }
 
     [Consumes("multipart/form-data")]
@@ -84,8 +78,8 @@ public class ImageController : ControllerBase
         var streamFileContent = new StreamFileContent(request.File.OpenReadStream(), request.File.ContentType,
         request.File.FileName, Convert.ToInt32(request.File.Length));
 
-        await imageService.UploadAsync(User.GetId(), streamFileContent, request.Descrizione, request.Ora, request.Luogo);
-        return NoContent();        
+        var result = await imageService.UploadAsync(User.GetId(), streamFileContent, request.Descrizione, request.Ora, request.Luogo);
+        return StatusCode(result.StatusCode);        
     }
 
     [HttpGet("images/me")]
@@ -98,10 +92,8 @@ public class ImageController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetImagesFromUsername(string username)
     {
-        var images = await imageService.GetImageInfoFromUsernameAsync(User.GetId(), username);
-        if (images == null)
-            return NotFound();
-        return Ok(images);
+        var result = await imageService.GetImageInfoFromUsernameAsync(User.GetId(), username);
+        return StatusCode(result.StatusCode, result.Result);
     }
 
     [HttpGet("latest")]
@@ -109,6 +101,6 @@ public class ImageController : ControllerBase
     public async Task<IActionResult> GetLatestImagesFromFriends()
     {
         var images = await imageService.GetLatestImagesFromFriendsAsync(User.GetId());
-        return Ok(images);
+        return StatusCode(images.StatusCode, images.Result);
     }
 }

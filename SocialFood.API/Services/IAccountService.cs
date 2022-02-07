@@ -6,6 +6,7 @@ namespace SocialFood.API.Services;
 public interface IAccountService
 {
     Task<Response> AddFriendAsync(Guid currentUserID, string currentUsername, string friendUsername);
+    Task<Response<IEnumerable<UserDTO>>> GetUsersFollowersAsync(Guid userID);
     Task<Response<IEnumerable<UserDTO>>> GetUsersFriendsAsync(string username);
     Task<Response<IEnumerable<UserDTO>>> GetUsersFromUsernameAsync(string username);
     Task<Response> RemoveFriendAsync(Guid currentUserID, string friendUsername);

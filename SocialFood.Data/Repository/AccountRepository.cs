@@ -43,6 +43,21 @@ public class AccountRepository : Repository, IAccountRepository
         return await conn.QueryAsync<User>(sql, dynamicParameters);
     }
 
+    public async Task<IEnumerable<User>> GetUsersFollowersAsync(string userID)
+    {
+        var sql = @"SELECT `users`.*
+                    FROM `users`
+                    INNER JOIN `friendships`
+                    ON `users`.`ID` = `friendships`.`IDUserA`
+                    WHERE `friendships`.`IDUserB` = @USERID";
+
+        var dynamicParameters = new DynamicParameters();
+        dynamicParameters.Add("@USERID", userID, DbType.String, ParameterDirection.Input);
+
+        using var conn = GetDbConnection();
+        return await conn.QueryAsync<User>(sql, dynamicParameters);
+    }
+
 
     private async Task ManageFriendships(string sql, string currentUserID, string friendUserID)
     {

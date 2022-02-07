@@ -13,19 +13,21 @@ public class ImageService : IImageService
 {
     private readonly IImageRepository imageRepository;
     private readonly IStorageProvider storageProvider;
+    private readonly INotificationService notificationService;
     private readonly ILogger<ImageService> logger;
 
-    public ImageService(IImageRepository imageRepository, IStorageProvider storageProvider, ILogger<ImageService> logger)
+    public ImageService(IImageRepository imageRepository, IStorageProvider storageProvider, INotificationService notificationService, ILogger<ImageService> logger)
     {
         this.imageRepository = imageRepository;
         this.storageProvider = storageProvider;
+        this.notificationService = notificationService;
         this.logger = logger;
     }
 
     private static string BuildPath(Guid IdUser, string fileName) =>
         Path.Combine(IdUser.ToString(), fileName);
 
-    public async Task<Response> UploadAsync(Guid IdUser, StreamFileContent file, string descrizione, DateTime ora, string luogo)
+    public async Task<Response> UploadAsync(Guid IdUser, string username, StreamFileContent file, string descrizione, DateTime ora, string luogo)
     {
         try
         {
@@ -44,6 +46,7 @@ public class ImageService : IImageService
                 Luogo = luogo
             };
             await imageRepository.SaveImage(image);
+            await notificationService.NotificationNewPhoto(IdUser, username);
             var response = new Response { StatusCode = StatusCodes.Status204NoContent };
 
             logger.LogInformation($"UploadAsync response with status: { response.StatusCode }");

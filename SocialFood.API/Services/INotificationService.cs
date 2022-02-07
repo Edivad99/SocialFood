@@ -7,5 +7,6 @@ public interface INotificationService
 {
     Response<string> GetPublicKey();
     Task NotificationNewFriendship(Guid friend, string currentUser);
+    Task NotificationNewPhoto(Guid userID, string username);
     Task<Response<NotificationSubscription>> SubscribeUserAsync(Guid IDUser, NotificationSubscription notification);
 }

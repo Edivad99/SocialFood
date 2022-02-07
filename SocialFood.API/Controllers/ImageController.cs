@@ -78,7 +78,7 @@ public class ImageController : ControllerBase
         var streamFileContent = new StreamFileContent(request.File.OpenReadStream(), request.File.ContentType,
         request.File.FileName, Convert.ToInt32(request.File.Length));
 
-        var result = await imageService.UploadAsync(User.GetId(), streamFileContent, request.Descrizione, request.Ora, request.Luogo);
+        var result = await imageService.UploadAsync(User.GetId(), User.GetUsername()!, streamFileContent, request.Descrizione, request.Ora, request.Luogo);
         return StatusCode(result.StatusCode);        
     }
 

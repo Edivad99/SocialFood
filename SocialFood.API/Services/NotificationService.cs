@@ -82,7 +82,7 @@ public class NotificationService : INotificationService
 
     public async Task NotificationNewFriendship(Guid friend, string currentUser)
     {
-        logger.LogInformation("Sended notification about new friendship");
+        logger.LogInformation("Sending notification about new friendship");
         var notificationSubscriptions = await notificationRepository.GetNotificationSubscriptionAsync(friend.ToString());
         var subscriptionsTask = notificationSubscriptions.Select(x => new NotificationSubscription()
         {
@@ -90,6 +90,20 @@ public class NotificationService : INotificationService
             P256dh = x.P256dh,
             Url = x.Url
         }).Select(x => SendNotificationAsync(x, $"{currentUser} ti ha aggiunto ai suoi amici", $"profile?username={currentUser}"));
+
+        await Task.WhenAll(subscriptionsTask);
+    }
+
+    public async Task NotificationNewPhoto(Guid userID, string username)
+    {
+        logger.LogInformation("Sending notification about new photo");
+        var followerSubscription = await notificationRepository.GetFollowerNotificationSubscriptionAsync(userID.ToString());
+        var subscriptionsTask = followerSubscription.Select(x => new NotificationSubscription()
+        {
+            Auth = x.Auth,
+            P256dh = x.P256dh,
+            Url = x.Url
+        }).Select(x => SendNotificationAsync(x, $"{username} ha pubblicato una nuova foto", $"profile?username={username}"));
 
         await Task.WhenAll(subscriptionsTask);
     }

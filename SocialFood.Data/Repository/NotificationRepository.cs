@@ -60,5 +60,21 @@ public class NotificationRepository : Repository, INotificationRepository
         using var conn = GetDbConnection();
         await conn.ExecuteAsync(sql, dynamicParameters);
     }
+
+    public async Task<IEnumerable<Notification>> GetFollowerNotificationSubscriptionAsync(string IDUser)
+    {
+        var sql = @"SELECT *
+                    FROM notifications 
+                    WHERE IDUser IN (
+                        SELECT `IDUserA` 
+                        FROM `friendships`
+                        WHERE `IDUserB` = @IDUSERB);";
+
+        var dynamicParameters = new DynamicParameters();
+        dynamicParameters.Add("@IDUSERB", IDUser, DbType.String, ParameterDirection.Input);
+
+        using var conn = GetDbConnection();
+        return await conn.QueryAsync<Notification>(sql, dynamicParameters);
+    }
 }
 

@@ -12,5 +12,5 @@ public interface IImageService
     Task<Response<IEnumerable<ImageDTO>>> GetImageInfoFromUsernameAsync(Guid userID, string username);
     Task<Response<IEnumerable<ImageDTO>>> GetLatestImagesFromFriendsAsync(Guid userID);
     Task<Response> RemoveLikeToImageAsync(Guid userID, Guid imageID);
-    Task<Response> UploadAsync(Guid IdUser, StreamFileContent file, string descrizione, DateTime ora, string luogo);
+    Task<Response> UploadAsync(Guid IdUser, string username, StreamFileContent file, string descrizione, DateTime ora, string luogo);
 }

@@ -63,6 +63,7 @@ jobs:
           ConnectionStrings.MySQL: ${{ secrets.MYSQL }}
           ConnectionStrings.StorageConnection: ${{ secrets.AZURESTORAGE }}
           AppSettings.ContainerName: ${{ secrets.CONTAINERNAME }}
+          NotificationSettings.PrivateKey: ${{ secrets.NOTIFICATION_PRIVATE_KEY }}
 
       - name: Build with dotnet
         run: dotnet build --configuration Release

@@ -11,11 +11,13 @@ namespace SocialFood.API.Services;
 public class AccountService : IAccountService
 {
     private readonly IAccountRepository accountRespository;
+    private readonly INotificationService notificationService;
     private readonly ILogger<AccountService> logger;
 
-    public AccountService(IAccountRepository accountRespository, ILogger<AccountService> logger)
+    public AccountService(IAccountRepository accountRespository, INotificationService notificationService , ILogger<AccountService> logger)
     {
         this.accountRespository = accountRespository;
+        this.notificationService = notificationService;
         this.logger = logger;
     }
 
@@ -86,7 +88,7 @@ public class AccountService : IAccountService
         return response;
     }
 
-    public async Task<Response> AddFriendAsync(Guid currentUserID, string friendUsername)
+    public async Task<Response> AddFriendAsync(Guid currentUserID, string currentUsername, string friendUsername)
     {
         try
         {
@@ -95,6 +97,8 @@ public class AccountService : IAccountService
             var response = await ManageFriendships(friendUsername, async friendUserID =>
             {
                 await accountRespository.AddFriendAsync(currentUserID.ToString(), friendUserID);
+
+                await notificationService.NotificationNewFriendship(Guid.Parse(friendUserID), currentUsername);
             });
             logger.LogInformation($"AddFriendAsync response with status: {response.StatusCode}");
             return response;

@@ -11,6 +11,7 @@ using SocialFood.StorageProviders;
 var builder = WebApplication.CreateBuilder(args);
 
 var jwtSettings = Configure<JwtSettings>("JwtSettings");
+var notificationSettings = Configure<NotificationSettings>("NotificationSettings");
 string connectionString = builder.Configuration.GetConnectionString("MySQL");
 
 // Add services to the container.
@@ -99,9 +100,11 @@ else
 builder.Services.AddScoped<IIdentityService, IdentityService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IImageService, ImageService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddSingleton<IAuthRepository>(_ => new AuthRepository(connectionString));
 builder.Services.AddSingleton<IAccountRepository>(_ => new AccountRepository(connectionString));
 builder.Services.AddSingleton<IImageRepository>(_ => new ImageRepository(connectionString));
+builder.Services.AddSingleton<INotificationRepository>(_ => new NotificationRepository(connectionString));
 
 T Configure<T>(string sectionName) where T : class
 {

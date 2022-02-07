@@ -1,6 +1,7 @@
 ﻿@page "/"
 @attribute [Authorize]
 @inject HttpClient HttpClient
+@inject IJSRuntime JSRuntime
 
 <PageTitle>Home</PageTitle>
 
@@ -22,6 +23,34 @@
         if (imagesMessage.IsSuccessStatusCode)
         {
             images = await imagesMessage.Content.ReadFromJsonAsync<List<ImageDTO>>();
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var subscription = await JSRuntime.InvokeAsync<NotificationSubscription>("blazorPushNotifications.requestSubscription");
+            if (subscription != null)
+            {
+                try
+                {
+                    var response = await HttpClient.PutAsJsonAsync("/api/Notification/subscribe", subscription);
+                    response.EnsureSuccessStatusCode();
+                }
+                catch (AccessTokenNotAvailableException ex)
+                {
+                    ex.Redirect();
+                }
+            }
+        }
+        catch(Exception e)
+        {
+            Console.WriteLine("Errore nel registrare la subscription per le notifiche");
+            Console.WriteLine("Se sei in modalità incognito, le notifiche non sono supportate");
+            Console.WriteLine("Se visualizzi questa pagina in Safari, le notifiche non sono supportate");
+            Console.WriteLine($"Error message: {e.Message}");
+            Console.WriteLine($"Error stack trace: {e.StackTrace}");
         }
     }
 }

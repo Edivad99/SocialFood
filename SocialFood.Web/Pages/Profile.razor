@@ -1,46 +1,61 @@
-﻿@page "/profile/{username?}"
+﻿@page "/profile"
 @inject HttpClient HttpClient
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
 @attribute [Authorize]
 
-<PageTitle>@(personalAccount ? "Il tuo profilo" : Username) | SocialFood</PageTitle>
-
-<h2>@(personalAccount ? $"Il tuo profilo ({Username})" : Username)</h2>
-@if(!personalAccount)
+@if (!accountNotFound)
 {
-    <h6>(@userDTOSearched.Name @userDTOSearched.Surname)</h6>
-    bool isYourFriend = friends.Where(u => u.Username == Username).Any();
-    <ButtonFriend IsYourFriend="isYourFriend" FriendUsername="@Username" />
+    <PageTitle>@(personalAccount ? "Il tuo profilo" : Username) | SocialFood</PageTitle>
+
+    <h2>@(personalAccount ? $"Il tuo profilo ({Username})" : Username)</h2>
+    @if (!personalAccount)
+    {
+        <h6>(@userDTOSearched.Name @userDTOSearched.Surname)</h6>
+        bool isYourFriend = friends.Where(u => u.Username == Username).Any();
+        <ButtonFriend IsYourFriend="isYourFriend" FriendUsername="@Username" />
+    }
+    else
+    {
+        <h6>Amici: @friends.Count()</h6>
+    }
+    <h6>Foto pubblicate: @images.Count()</h6>
+
+    <ImageList images="images" ShowUsername="false" />
 }
 else
 {
-    <h6>Amici: @friends.Count()</h6>
+    <PageTitle>Account non trovato | SocialFood</PageTitle>
+    <h2>Account non trovato</h2>
 }
-<h6>Foto pubblicate: @images.Count()</h6>
 
-<ImageList images="images" ShowUsername="false"/>
 
 @code{
 
-    [Parameter]
-    public string? Username { get; set; }
+    string Username;
 
     bool personalAccount = false;
+    bool accountNotFound = false;
     List<UserDTO> friends = new();
     List<ImageDTO> images = new();
     UserDTO userDTOSearched = new();
+
+    protected override void OnInitialized()
+    {
+        NavigationManager.TryGetQueryString<string>("username", out Username);
+    }
 
     protected override async Task OnParametersSetAsync()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
-        if(string.IsNullOrWhiteSpace(Username))
+        if (string.IsNullOrWhiteSpace(Username))
         {
             // It's my account
             personalAccount = true;
             Username = user.GetUsername();
         }
-        else if(user.GetUsername() == Username)
+        else if (user.GetUsername() == Username)
         {
             // Check if it's my account
             personalAccount = true;
@@ -49,10 +64,16 @@ else
         else
         {
             var userSearched = await HttpClient.GetAsync($"/api/Account/finduser/{Username}");
-            if(userSearched.IsSuccessStatusCode)
+            if (userSearched.IsSuccessStatusCode)
             {
                 userDTOSearched = (await userSearched.Content.ReadFromJsonAsync<List<UserDTO>>()).FirstOrDefault();
             }
+            else
+            {
+                accountNotFound = true;
+                return;
+            }
+
         }
 
         // Fetch friends

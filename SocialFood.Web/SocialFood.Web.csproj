@@ -13,6 +13,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,6 +30,7 @@
     <None Remove="Microsoft.Extensions.Http" />
     <None Remove="Blazored.LocalStorage" />
     <None Remove="Util\" />
+    <None Remove="Microsoft.AspNetCore.WebUtilities" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Utils\" />

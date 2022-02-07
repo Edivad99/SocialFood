@@ -14,7 +14,7 @@
     [Parameter]
     public List<UserDTO> Users { get; set; }
 
-    string GetProfileLink(UserDTO user) => $"/profile/{user.Username}";
+    string GetProfileLink(UserDTO user) => $"/profile?username={user.Username}";
 
 }
 

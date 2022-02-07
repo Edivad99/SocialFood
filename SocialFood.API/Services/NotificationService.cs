@@ -89,7 +89,7 @@ public class NotificationService : INotificationService
             Auth = x.Auth,
             P256dh = x.P256dh,
             Url = x.Url
-        }).Select(x => SendNotificationAsync(x, $"{currentUser} ti ha aggiunto ai suoi amici", $"profile/{currentUser}"));
+        }).Select(x => SendNotificationAsync(x, $"{currentUser} ti ha aggiunto ai suoi amici", $"profile?username={currentUser}"));
 
         await Task.WhenAll(subscriptionsTask);
     }

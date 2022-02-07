@@ -18,9 +18,9 @@
 
     async function getServerPublicKey() {
         const apiUrl = (await fetch('appsettings.json').then(res => res.json()))['ApiUrl'];
-        const primaryKeyUrl = apiUrl + '/api/Notification/publickey';
-        const primaryKey = await fetch(primaryKeyUrl).then(res => res.text());
-        return primaryKey;
+        const publicKeyUrl = apiUrl + '/api/Notification/publickey';
+        const publicKey = await fetch(publicKeyUrl).then(res => res.text());
+        return publicKey;
     }
 
     async function subscribe(worker) {

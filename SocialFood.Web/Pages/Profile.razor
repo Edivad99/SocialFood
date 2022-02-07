@@ -5,7 +5,7 @@
 
 <PageTitle>@(personalAccount ? "Il tuo profilo" : Username) | SocialFood</PageTitle>
 
-<h2>@(personalAccount ? "Il tuo profilo" : Username)</h2>
+<h2>@(personalAccount ? $"Il tuo profilo ({Username})" : Username)</h2>
 @if(!personalAccount)
 {
     <h6>(@userDTOSearched.Name @userDTOSearched.Surname)</h6>
@@ -13,7 +13,7 @@
     <ButtonFriend IsYourFriend="isYourFriend" FriendUsername="@Username" />
 }
 else
-{ 
+{
     <h6>Amici: @friends.Count()</h6>
 }
 <h6>Foto pubblicate: @images.Count()</h6>

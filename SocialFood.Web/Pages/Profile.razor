@@ -32,10 +32,10 @@ else
 
 @code{
 
-    string Username;
-
+    string? Username;
     bool personalAccount = false;
     bool accountNotFound = false;
+
     List<UserDTO> friends = new();
     List<ImageDTO> images = new();
     UserDTO userDTOSearched = new();
@@ -48,7 +48,7 @@ else
     protected override async Task OnParametersSetAsync()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
+        var user = authState!.User;
         if (string.IsNullOrWhiteSpace(Username))
         {
             // It's my account

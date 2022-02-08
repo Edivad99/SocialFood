@@ -4,12 +4,13 @@ using System.Security.Principal;
 
 namespace SocialFood.Shared.Extensions;
 
+#nullable enable
 public static class ClaimsExtensions
 {
     public static Guid GetId(this IPrincipal user)
     {
         var value = GetClaimValue(user, ClaimTypes.NameIdentifier);
-        return Guid.Parse(value);
+        return Guid.Parse(value!);
     }
 
     public static string? GetUsername(this IPrincipal user)
@@ -32,4 +33,4 @@ public static class ClaimsExtensions
 
     public static string? GetClaimValue(this IPrincipal user, string claimType) => ((ClaimsPrincipal)user).FindFirst(claimType)?.Value;
 }
-
+# nullable disable

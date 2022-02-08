@@ -2,9 +2,9 @@
 
 public class Notification
 {
-    public string IDUser { get; set; }
-    public string Url { get; set; }
-    public string P256dh { get; set; }
-    public string Auth { get; set; }
+    public string IDUser { get; set; } = string.Empty;
+    public string Url { get; set; } = string.Empty;
+    public string P256dh { get; set; } = string.Empty;
+    public string Auth { get; set; } = string.Empty;
 }
 

@@ -11,11 +11,13 @@ namespace SocialFood.API.Services;
 public class AccountService : IAccountService
 {
     private readonly IAccountRepository accountRespository;
+    private readonly INotificationService notificationService;
     private readonly ILogger<AccountService> logger;
 
-    public AccountService(IAccountRepository accountRespository, ILogger<AccountService> logger)
+    public AccountService(IAccountRepository accountRespository, INotificationService notificationService , ILogger<AccountService> logger)
     {
         this.accountRespository = accountRespository;
+        this.notificationService = notificationService;
         this.logger = logger;
     }
 
@@ -42,7 +44,7 @@ public class AccountService : IAccountService
         catch(Exception e)
         {
             logger.LogError(e, $"New error in GetUsersFromUsernameAsync with username: { username }");
-            return new() { StatusCode = StatusCodes.Status500InternalServerError, Result = null };
+            return new() { StatusCode = StatusCodes.Status500InternalServerError, Result = new List<UserDTO>() };
         }
         
     }
@@ -66,8 +68,31 @@ public class AccountService : IAccountService
         catch (Exception e)
         {
             logger.LogError(e, $"New error in GetUsersFriendsAsync with username: { username }");
-            return new() { StatusCode = StatusCodes.Status500InternalServerError, Result = null };
+            return new() { StatusCode = StatusCodes.Status500InternalServerError, Result = new List<UserDTO>() };
         } 
+    }
+
+    public async Task<Response<IEnumerable<UserDTO>>> GetUsersFollowersAsync(Guid userID)
+    {
+        try
+        {
+            logger.LogInformation($"New GetUsersFollowersAsync request: {userID}");
+            var users = await accountRespository.GetUsersFollowersAsync(userID.ToString());
+            var usersDTO = users.Select(u => u.ToUserDTO());
+
+            var response = new Response<IEnumerable<UserDTO>>()
+            {
+                StatusCode = StatusCodes.Status200OK,
+                Result = usersDTO
+            };
+            logger.LogInformation($"GetUsersFollowersAsync response with status: {response.StatusCode}");
+            return response;
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e, $"New error in GetUsersFollowersAsync with username: { userID }");
+            return new() { StatusCode = StatusCodes.Status500InternalServerError, Result = new List<UserDTO>() };
+        }
     }
 
     private async Task<Response> ManageFriendships(string friendUsername, Action<string> action)
@@ -86,7 +111,7 @@ public class AccountService : IAccountService
         return response;
     }
 
-    public async Task<Response> AddFriendAsync(Guid currentUserID, string friendUsername)
+    public async Task<Response> AddFriendAsync(Guid currentUserID, string currentUsername, string friendUsername)
     {
         try
         {
@@ -95,6 +120,8 @@ public class AccountService : IAccountService
             var response = await ManageFriendships(friendUsername, async friendUserID =>
             {
                 await accountRespository.AddFriendAsync(currentUserID.ToString(), friendUserID);
+
+                await notificationService.NotificationNewFriendship(Guid.Parse(friendUserID), currentUsername);
             });
             logger.LogInformation($"AddFriendAsync response with status: {response.StatusCode}");
             return response;

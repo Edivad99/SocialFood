@@ -11,7 +11,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddHttpClient("api", client =>
 {
-    client.BaseAddress = new Uri(builder.Configuration["ApiUrl"]);
+    client.BaseAddress = new Uri(builder.Configuration["ApiUrl"] ?? string.Empty);
 });
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("api"));
 
@@ -20,4 +20,3 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddBlazoredLocalStorage();
 
 await builder.Build().RunAsync();
-

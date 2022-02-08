@@ -44,7 +44,7 @@ public class AccountController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> AddFriend(string friendUsername)
     {
-        var response = await accountService.AddFriendAsync(User.GetId(), friendUsername);
+        var response = await accountService.AddFriendAsync(User.GetId(), User.GetUsername()!, friendUsername);
         return StatusCode(response.StatusCode);
     }
 

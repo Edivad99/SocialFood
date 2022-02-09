@@ -1,6 +1,7 @@
 ﻿@page "/"
 @attribute [Authorize]
 @inject HttpClient HttpClient
+@inject SFClient sfClient
 @inject IJSRuntime JSRuntime
 
 <PageTitle>Home</PageTitle>
@@ -19,11 +20,7 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        var imagesMessage = await HttpClient.GetAsync($"/api/Image/latest");
-        if (imagesMessage.IsSuccessStatusCode)
-        {
-            images = await imagesMessage.Content.ReadFromJsonAsync<List<ImageDTO>>();
-        }
+        images = await sfClient.GetLatestImagesAsync();
     }
 
     protected override async Task OnInitializedAsync()

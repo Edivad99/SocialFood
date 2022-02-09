@@ -1,5 +1,5 @@
 ﻿@page "/friends"
-@inject HttpClient HttpClient
+@inject SFClient sfClient
 @attribute [Authorize]
 
 <PageTitle>I tuoi amici | SocialFood</PageTitle>
@@ -17,7 +17,7 @@
     <InputText id="username" @bind-Value="user.Username" />
     <button type="submit" class="btn btn-primary">Cerca</button>
 </EditForm>
-@if (users==null)
+@if (!userFound)
 {
     <h6 class="text-danger">Account trovati: 0</h6>
 }
@@ -33,34 +33,24 @@ else
 
 @code {
     List<UserDTO> friends = new();
+    bool userFound = true;
+    List<UserDTO> users = new();
+
+    DummyUser user = new();
 
     protected override async Task OnInitializedAsync()
     {
-        var url = "/api/Account/me/friends";
-        var responseMessage = await HttpClient.GetAsync(url);
-        if (responseMessage.IsSuccessStatusCode)
-            friends = await responseMessage.Content.ReadFromJsonAsync<List<UserDTO>>();
-        else
-            friends.Clear();
+        friends = await sfClient.GetMyFriendsAsync();
     }
-
-    private User user = new();
-    private List<UserDTO> users = new();
 
     async void FindUsers()
     {
-        var url = $"/api/Account/finduser/{user.Username}";
-        var responseMessage = await HttpClient.GetAsync(url);
-        if (responseMessage.IsSuccessStatusCode)
-        {
-            users = await responseMessage.Content.ReadFromJsonAsync<List<UserDTO>>();
-        }
-        else
-            users = null;
+        users = await sfClient.GetUserByUsername(user.Username);
+        userFound = users.Any();
         StateHasChanged();
     }
 
-    class User
+    class DummyUser
     {
         public string Username { get; set; } = string.Empty;
     }

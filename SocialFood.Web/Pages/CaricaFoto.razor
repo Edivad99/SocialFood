@@ -51,7 +51,7 @@
         content.Add(uploadFile.FileContent, "\"File\"", uploadFile.FileName);
         content.Add(new StringContent(uploadFile.Descrizione), "Descrizione");
         content.Add(new StringContent(uploadFile.Luogo), "Luogo");
-        content.Add(new StringContent(DateTime.Now.ToString("yyyy-MM-dd H:MM:ss")), "Ora");
+        content.Add(new StringContent(DateTime.Now.ToString("s")), "Ora");
 
         var uploadResponse = await HttpClient.PostAsync("/api/Image", content);
 

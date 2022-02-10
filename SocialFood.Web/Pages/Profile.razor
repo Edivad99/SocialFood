@@ -1,5 +1,5 @@
 ﻿@page "/profile"
-@inject HttpClient HttpClient
+@inject SFClient sfClient
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
 @attribute [Authorize]
@@ -63,31 +63,19 @@ else
         }
         else
         {
-            var userSearched = await HttpClient.GetAsync($"/api/Account/finduser/{Username}");
-            if (userSearched.IsSuccessStatusCode)
-            {
-                userDTOSearched = (await userSearched.Content.ReadFromJsonAsync<List<UserDTO>>()).FirstOrDefault();
-            }
-            else
+            List<UserDTO> users = await sfClient.GetUserByUsername(Username);
+            if(users.Count() != 1)
             {
                 accountNotFound = true;
                 return;
             }
-
+            userDTOSearched = users.First();
         }
 
         // Fetch friends
-        var friendsMessage = await HttpClient.GetAsync("/api/Account/me/friends");
-        if (friendsMessage.IsSuccessStatusCode)
-        {
-            friends = await friendsMessage.Content.ReadFromJsonAsync<List<UserDTO>>();
-        }
+        friends = await sfClient.GetMyFriendsAsync();
         //Fetch images
-        var imagesMessage = await HttpClient.GetAsync($"/api/Image/images/{(personalAccount ? "me" : Username)}");
-        if (imagesMessage.IsSuccessStatusCode)
-        {
-            images = await imagesMessage.Content.ReadFromJsonAsync<List<ImageDTO>>();
-        }
+        images = await sfClient.GetImagesByUsername(Username);
     }
 }
 

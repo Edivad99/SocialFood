@@ -7,7 +7,9 @@
 
 <h1>Carica foto</h1>
 
-<EditForm Model="uploadFile" OnSubmit="HandleUpload">
+<EditForm Model="uploadFile" OnValidSubmit="HandleUpload">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
     <ul class="vertical-form">
         <li>
             <label for="file">Seleziona un file:</label>
@@ -49,7 +51,7 @@
         content.Add(uploadFile.FileContent, "\"File\"", uploadFile.FileName);
         content.Add(new StringContent(uploadFile.Descrizione), "Descrizione");
         content.Add(new StringContent(uploadFile.Luogo), "Luogo");
-        content.Add(new StringContent(DateTime.Now.ToString("yyyy-MM-dd H:MM:ss")), "Ora");
+        content.Add(new StringContent(DateTime.Now.ToString("s")), "Ora");
 
         var uploadResponse = await HttpClient.PostAsync("/api/Image", content);
 
@@ -66,11 +68,12 @@
 
     class UploadFile
     {
+        [Required(ErrorMessage = "Seleziona un file")]
         public StreamContent FileContent { get; set; }
         public string FileName { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Inserisci una descrizione")]
         public string Descrizione { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Inserisci il luogo")]
         public string Luogo { get; set; }
     }
 }

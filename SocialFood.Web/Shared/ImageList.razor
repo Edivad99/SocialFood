@@ -7,7 +7,7 @@
 
     <Virtualize Items="@images" Context="image">
         <ItemContent>
-            <ImageView image="image" ShowUsername="ShowUsername" />
+            <ImageView image="image" ShowUsername="ShowUsername" ShowControll="ShowControll" />
         </ItemContent>
         <Placeholder>
             <p>Caricamento immagine in corso...</p>
@@ -26,6 +26,8 @@ else
     [Parameter]
     public List<ImageDTO> images { get; set; }
     [Parameter]
-    public bool ShowUsername { get; set; }
+    public bool ShowUsername { get; set; } = true;
+    [Parameter]
+    public bool ShowControll { get; set; } = false;
 }
 

@@ -1,0 +1,28 @@
+﻿@inject HttpClient HttpClient
+@inject NavigationManager NavigationManager
+
+<button type="button" class="btn btn-danger btn-sm" @onclick="@ShowModal">Elimina</button>
+
+<Modal @ref="modal" Title="Elimina foto" OnSuccessCallback="@DeletePhoto">
+    Sei sicuro di voler rimuovere la foto?
+</Modal>
+
+@code {
+    [Parameter]
+    public string ImageID { get; set; }
+
+    Modal modal { get; set; }
+
+    void ShowModal() => modal.Open();
+
+    async void DeletePhoto()
+    {
+        var responseMessage = await HttpClient.DeleteAsync($"/api/Image/{ImageID}");
+        if(responseMessage.IsSuccessStatusCode)
+        {
+            modal.Close();
+            NavigationManager.NavigateTo("/profile", true);
+        }
+    }
+}
+

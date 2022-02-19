@@ -8,6 +8,10 @@
     </div>
     <ul class="list-group list-group-flush">
         <li class="list-group-item"><ButtonLike Likes="@image.Likes" ImageID="@image.Id" Like="@image.YourLike"/></li>
+        @if(ShowControll)
+        {
+            <li class="list-group-item"><ButtonDelete ImageID="@image.Id" /></li>
+        }
     </ul>
     <div class="card-footer">
         <ImageFooter ShowUsername="ShowUsername" Username="@image.Username" DateTime="@image.Ora"/>
@@ -19,6 +23,8 @@
     public ImageDTO image { get; set; }
     [Parameter]
     public bool ShowUsername { get; set; }
+    [Parameter]
+    public bool ShowControll { get; set; }
 
     string GetImageUrl() => HttpClient.BaseAddress + "api/Image/" + image.Id;
 }

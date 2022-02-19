@@ -1,0 +1,46 @@
+﻿<div class="modal show @ModalClass" tabindex="-1" aria-hidden="true" style="display:@ModalDisplay">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Title</h5>
+            </div>
+            <div class="modal-body">
+                <p>@ChildContent</p>
+            </div>
+            <div class="modal-footer">
+                <div class="btn-group" role="group" aria-label="Basic example">
+                    <button type="button" class="btn btn-outline-secondary" data-dismiss="modal" @onclick="() => Close()">Annulla</button>
+                    <button type="button" class="btn btn-success" @onclick="OnSuccessCallback">Conferma</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    [Parameter]
+    public string Title { get; set; }
+    [Parameter]
+    public EventCallback OnSuccessCallback { get; set; }
+
+    public Guid Guid = Guid.NewGuid();
+    string ModalDisplay = "none;";
+    string ModalClass = "";
+
+    public void Open()
+    {
+        ModalDisplay = "block;";
+        ModalClass = "fade";
+        StateHasChanged();
+    }
+
+    public void Close()
+    {
+        ModalDisplay = "none;";
+        ModalClass = "";
+        StateHasChanged();
+    }
+}
